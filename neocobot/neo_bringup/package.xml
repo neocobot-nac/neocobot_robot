@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<package>
+  <name>neo_bringup</name>
+  <version>0.1.0</version>
+  <description>
+      The neo_bringup package.
+  </description>
+
+  <maintainer email="shaojie@neocobot.com">Huang Shaojie</maintainer>
+
+  <license>BSD</license>
+
+  <url type="website">http://wiki.ros.org/neo_robot</url>
+
+  <author>Huang Shaojie</author>
+  <author email="shaojie@neocobot.com">Huang Shaojie</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <run_depend>tf2_ros</run_depend>
+  <run_depend>neo_description</run_depend>
+  <run_depend>neo_driver</run_depend>
+  <run_depend>robot_state_publisher</run_depend>
+
+  <build_depend>roscpp</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>neo_msgs</build_depend>
+  <build_depend>tf</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  
+  <run_depend>roscpp</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>neo_msgs</run_depend>
+  <run_depend>tf</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+
+
+  <export>
+
+  </export>
+</package>

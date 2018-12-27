@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<launch>
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find neo_description)/urdf/omni_6/omni_6_robot.urdf.xacro'" /> 
+</launch>

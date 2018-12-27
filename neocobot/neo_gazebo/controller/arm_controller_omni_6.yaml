@@ -1,0 +1,22 @@
+arm_controller:
+  type: position_controllers/JointTrajectoryController
+  joints:
+    - first_joint
+    - second_joint
+    - third_joint
+    - fourth_joint
+    - fifth_joint
+    - sixth_joint
+
+  constraints:
+      goal_time: 0.6
+      stopped_velocity_tolerance: 0.05
+      first_joint: {trajectory: 0.1, goal: 0.1}
+      second_joint: {trajectory: 0.1, goal: 0.1}
+      third_joint: {trajectory: 0.1, goal: 0.1}
+      fourth_joint: {trajectory: 0.1, goal: 0.1}
+      fifth_joint: {trajectory: 0.1, goal: 0.1}
+      sixth_joint: {trajectory: 0.1, goal: 0.1}
+  stop_trajectory_duration: 0.5
+  state_publish_rate:  25
+  action_monitor_rate: 10

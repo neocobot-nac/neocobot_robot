@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: neo_description
+    relative_path: urdf/omni_6/omni_6_robot.urdf.xacro
+    xacro_args: "--inorder "
+  SRDF:
+    relative_path: config/omni_6_robot.srdf
+  CONFIG:
+    author_name: Huang Shaojie
+    author_email: shaojie@neocobot.com
+    generated_timestamp: 1541045483

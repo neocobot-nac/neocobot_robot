@@ -1,0 +1,294 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="omni_6">
+
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+  <xacro:include filename="$(find neo_description)/urdf/omni_6/omni_6.transmission.xacro" />
+  <xacro:include filename="$(find neo_description)/urdf/omni_6/omni_6.gazebo.xacro" />
+
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+  <xacro:macro name="omni_6_robot" params="joint_limited
+     first_lower_limit:=${-5.0*pi/9.0}      first_upper_limit:=${5.0*pi/9.0}
+     second_lower_limit:=${-pi/2.0}         second_upper_limit:=${pi/2.0}
+     third_lower_limit:=${-pi/2.0}          third_upper_limit:=${pi/2.0}
+     fourth_lower_limit:=${-8.0*pi/9.0}     fourth_upper_limit:=${8.0*pi/9.0}
+     fifth_lower_limit:=${-pi/2.0}          fifth_upper_limit:=${pi/2.0}
+     sixth_lower_limit:=${-8.0*pi/9.0}      sixth_upper_limit:=${8.0*pi/9.0}">
+     
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <link name="base_link" >
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://neo_description/meshes/omni_6/base_link.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.75294 0.75294 0.75294 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://neo_description/meshes/omni_6/base_link.STL" />
+        </geometry>
+      </collision>
+      <inertial>
+        <origin xyz="1.5235E-07 -0.00012739 0.0084163" rpy="0 0 0" />
+        <mass value="23.926" />
+        <inertia ixx="0.0022735" ixy="1.8581E-07" ixz="-3.3985E-07"
+                                 iyy="0.0017093"   iyz="8.6036E-05"
+                                                   izz="0.00056414" />
+      </inertial>
+    </link>
+    
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <joint name="first_joint" type="revolute">
+      <parent link="base_link" />
+      <child link = "first_link" />
+      <origin xyz="0 0 0.1565" rpy="-5.8488E-31 0 0" />
+      <axis xyz="0 0 1" />
+      <xacro:unless value="${joint_limited}">
+        <limit lower="${-2.0 * pi}" upper="${2.0 * pi}" effort="150.0" velocity="3.14"/>
+      </xacro:unless>
+      <xacro:if value="${joint_limited}">
+        <limit lower="${first_lower_limit}" upper="${first_upper_limit}" effort="150.0" velocity="3.14"/>
+      </xacro:if>
+      <dynamics damping="0.0" friction="0.0"/>
+    </joint>
+
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <link name="first_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://neo_description/meshes/omni_6/first_link.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.75294 0.75294 0.75294 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://neo_description/meshes/omni_6/first_link.STL" />
+        </geometry>
+      </collision>
+      <inertial>
+        <origin xyz="0.00323 -1.2865E-05 0.046584" rpy="0 0 0" />
+        <mass value="0.77157" />
+        <inertia ixx="0.00025747" ixy="-3.6897E-07" ixz="-6.1643E-05"
+        			  iyy="0.00039767"  iyz="1.8067E-07"
+        					    izz="0.00014021" />
+      </inertial>
+    </link>
+
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <joint name="second_joint" type="revolute">
+      <parent link="first_link" />
+      <child link = "second_link" />
+      <origin xyz="0.038 0 0.07" rpy="1.5708 5.8488E-31 -1.5708" />
+      <axis xyz="0 0 1" />
+      <xacro:unless value="${joint_limited}">
+        <limit lower="${-2.0 * pi}" upper="${2.0 * pi}" effort="150.0" velocity="3.14"/>
+      </xacro:unless>
+      <xacro:if value="${joint_limited}">
+        <limit lower="${second_lower_limit}" upper="${second_upper_limit}" effort="150.0" velocity="3.14"/>
+      </xacro:if>
+      <dynamics damping="0.0" friction="0.0"/>
+    </joint>
+
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <link name="second_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://neo_description/meshes/omni_6/second_link.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.75294 0.75294 0.75294 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://neo_description/meshes/omni_6/second_link.STL" />
+        </geometry>
+      </collision>
+      <inertial>
+        <origin xyz="-2.3416E-06 0.1621 -0.0084837" rpy="0 0 0" />
+        <mass value="1.3093" />
+        <inertia ixx="0.0039407" ixy="-6.5511E-08" ixz="-5.4476E-08"
+        			 iyy="0.00038754"  iyz="-0.00070889"
+        					   izz="0.0035532" />
+      </inertial>
+    </link>
+
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <joint name="third_joint" type="revolute">
+      <parent link="second_link" />
+      <child link = "third_link" />
+      <origin xyz="0 0.29 0.036" rpy="-3.1416 -4.7321E-17 -2.844E-33" />
+      <axis xyz="0 0 -1" />
+      <xacro:unless value="${joint_limited}">
+        <limit lower="${-2.0 * pi}" upper="${2.0 * pi}" effort="150.0" velocity="3.14"/>
+      </xacro:unless>
+      <xacro:if value="${joint_limited}">
+        <limit lower="${third_lower_limit}" upper="${third_upper_limit}" effort="150.0" velocity="3.14"/>
+      </xacro:if>
+      <dynamics damping="0.0" friction="0.0"/>
+    </joint>
+
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <link name="third_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://neo_description/meshes/omni_6/third_link.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.75294 0.75294 0.75294 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://neo_description/meshes/omni_6/third_link.STL" />
+        </geometry>
+      </collision>
+      <inertial>
+        <origin xyz="3.4132E-06 -0.058377 -0.0040217" rpy="0 0 0" />
+        <mass value="0.53063" />
+        <inertia ixx="0.00037624" ixy="-6.4619E-08" ixz="5.6136E-08"
+        			  iyy="4.9631E-05"  iyz="4.3789E-05"
+        					    izz="0.00032661" />
+      </inertial>
+    </link>
+
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <joint name="fourth_joint" type="revolute">
+      <parent link="third_link" />
+      <child link = "fourth_link" />
+      <origin xyz="0 -0.119 -0.0025" rpy="1.5708 -1.5708 0" />
+      <axis xyz="0 0 1" />
+      <xacro:unless value="${joint_limited}">
+        <limit lower="${-2.0 * pi}" upper="${2.0 * pi}" effort="28.0" velocity="3.14"/>
+      </xacro:unless>
+      <xacro:if value="${joint_limited}">
+        <limit lower="${fourth_lower_limit}" upper="${fourth_upper_limit}" effort="28.0" velocity="3.14"/>
+      </xacro:if>
+      <dynamics damping="0.0" friction="0.0"/>
+    </joint>
+
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <link name="fourth_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://neo_description/meshes/omni_6/fourth_link.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.75294 0.75294 0.75294 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://neo_description/meshes/omni_6/fourth_link.STL" />
+        </geometry>
+      </collision>
+      <inertial>
+        <origin xyz="-0.002865 5.6603E-05 0.081013" rpy="0 0 0" />
+        <mass value="0.826" />
+        <inertia ixx="0.0015917" ixy="9.1789E-07" ixz="8.0847E-05"
+        			 iyy="0.002298"   iyz="-1.3278E-07"
+        					  izz="0.00070624" />
+      </inertial>
+    </link>
+
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <joint name="fifth_joint" type="revolute">
+      <parent link="fourth_link" />
+      <child link = "fifth_link" />
+      <origin xyz="-0.0285 0 0.171" rpy="1.5708 -1.1783E-16 -1.5708" />
+      <axis xyz="0 0 1" />
+      <xacro:unless value="${joint_limited}">
+        <limit lower="${-2.0 * pi}" upper="${2.0 * pi}" effort="150.0" velocity="3.14"/>
+      </xacro:unless>
+      <xacro:if value="${joint_limited}">
+        <limit lower="${fifth_lower_limit}" upper="${fifth_upper_limit}" effort="150.0" velocity="3.14"/>
+      </xacro:if>
+      <dynamics damping="0.0" friction="0.0"/>
+    </joint>
+
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <link name="fifth_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://neo_description/meshes/omni_6/fifth_link.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.75294 0.75294 0.75294 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://neo_description/meshes/omni_6/fifth_link.STL" />
+        </geometry>
+      </collision>
+      <inertial>
+        <origin xyz="5.7025E-10 0.020944 -0.028635" rpy="0 0 0" />
+        <mass value="0.26325" />
+        <inertia ixx="0.00012241" ixy="2.6177E-12" ixz="1.3273E-14"
+        			  iyy="3.147E-09"  iyz="-6.2065E-07"
+        					   izz="0.0001224" />
+      </inertial>
+    </link>
+
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <joint name="sixth_joint" type="revolute">
+      <parent link="fifth_link" />
+      <child link = "sixth_link" />
+      <origin xyz="0 0.0605 -0.0285" rpy="1.5708 1.5708 3.1416" />
+      <axis xyz="0 0 1" />
+      <xacro:unless value="${joint_limited}">
+        <limit lower="${-2.0 * pi}" upper="${2.0 * pi}" effort="150.0" velocity="3.14"/>
+      </xacro:unless>
+      <xacro:if value="${joint_limited}">
+        <limit lower="${sixth_lower_limit}" upper="${sixth_upper_limit}" effort="28.0" velocity="3.14"/>
+      </xacro:if>
+      <dynamics damping="0.0" friction="0.0"/>
+    </joint>
+
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <link name="sixth_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://neo_description/meshes/omni_6/sixth_link.STL" />
+        </geometry>
+        <material name="">
+          <color rgba="0.75294 0.75294 0.75294 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://neo_description/meshes/omni_6/sixth_link.STL" />
+        </geometry>
+      </collision>
+      <inertial>
+        <origin xyz="7.7719E-07 -0.0012959 0.022061" rpy="0 0 0" />
+        <mass value="0.26299" />
+        <inertia ixx="3.0035E-05" ixy="8.5988E-10" ixz="-5.3613E-10"
+        			  iyy="2.8523E-05" iyz="4.2602E-06"
+        					   izz="1.5122E-06" />
+      </inertial>
+    </link>
+
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <xacro:omni_6_transmission/>
+    <xacro:omni_6_gazebo/>
+
+  </xacro:macro>
+</robot>

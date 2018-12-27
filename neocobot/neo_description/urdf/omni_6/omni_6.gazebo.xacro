@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:macro name="omni_6_gazebo">
+
+    <gazebo reference="first_joint">
+      <selfCollide>true</selfCollide>
+    </gazebo>
+    <gazebo reference="second_joint">
+      <selfCollide>true</selfCollide>
+    </gazebo>
+    <gazebo reference="third_joint">
+      <selfCollide>true</selfCollide>
+    </gazebo>
+    <gazebo reference="fourth_joint">
+      <selfCollide>true</selfCollide>
+    </gazebo>
+    <gazebo reference="fifth_joint">
+      <selfCollide>true</selfCollide>
+    </gazebo>
+    <gazebo reference="sixth_joint">
+      <selfCollide>true</selfCollide>
+    </gazebo>
+
+  </xacro:macro>
+
+</robot>

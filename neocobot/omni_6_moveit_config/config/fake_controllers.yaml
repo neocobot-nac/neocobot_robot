@@ -1,0 +1,9 @@
+controller_list:
+  - name: fake_omni_6_controller
+    joints:
+      - first_joint
+      - second_joint
+      - third_joint
+      - fourth_joint
+      - fifth_joint
+      - sixth_joint

@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+
+<launch>
+  <node name="omni_6_rviz" pkg="rviz" type="rviz" args="-d $(find neo_description)/rviz/omni_6.rviz" />
+  
+</launch>

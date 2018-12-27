@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<package>
+  <name>neo_gazebo</name>
+  <version>0.1.0</version>
+  <description>
+      Gazebo for Neo Robot Arms.
+  </description>
+
+  
+  <maintainer email="shaojie@neocobot.com">Huang Shaojie</maintainer>
+
+  <license>BSD</license>
+
+  <url type="website">http://wiki.ros.org/neo_robot</url>
+
+  <author>Huang Shaojie</author>
+  <author email="shaojie@neocobot.com">Huang Shaojie</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <run_depend>neo_description</run_depend>
+  <run_depend>gazebo_ros</run_depend>
+  <run_depend>gazebo_ros_control</run_depend>
+  <run_depend>joint_state_controller</run_depend>
+  <run_depend>joint_trajectory_controller</run_depend>
+  <run_depend>effort_controllers</run_depend>
+  <run_depend>robot_state_publisher</run_depend>
+  <run_depend>rostopic</run_depend>
+  <run_depend>controller_manager</run_depend>
+  
+  <export>
+  </export>
+</package>

@@ -1,3 +1,25 @@
+/*****************************************************************************
+*  Neocobot OdinClient library
+*  Copyright (C) 2019 Huang Shaojie  shaojie@neocobot.com
+*
+*  @file     safequeue.h
+*  @brief    线程安全queue
+*
+*  @detail   定义了线程安全queue
+*			 1.提供线程安全队列,存放即将发送的任务
+*
+*  @author   Huang Shaojie
+*  @email    shaojie@neocobot.com
+*  @version  0.2.0
+*  @date     2019/01/17
+*
+*----------------------------------------------------------------------------
+*  Change History :
+*  <Date>     | <Version> | <Author>       | <Description>
+*----------------------------------------------------------------------------
+*  2019/01/17 | 0.2.0     | Huang Shaojie  | 重组并定义功能
+*----------------------------------------------------------------------------
+*****************************************************************************/
 #ifndef SAFEQUEUE_H
 #define SAFEQUEUE_H
 

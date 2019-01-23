@@ -1,0 +1,7 @@
+EndPose pose
+float32 velocity
+float32 acceleration
+bool relative
+bool block
+---
+int32 event

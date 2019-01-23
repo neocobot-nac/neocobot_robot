@@ -1,42 +1,81 @@
 #include "neo_driver/neo_driver.h"
 
-NeoDriver::NeoDriver(std::string host, int port, std::string name)
+NeoDriver::NeoDriver(std::string host, int port, std::string name, bool debug)
 {
-    if(robot.RobotLogin(host.c_str(), port) == SUCCEED)
+    if(robot.RobotLogin(host.c_str(), port) == RobotEvent_Succeed)
     {
-        ROS_INFO("Connect robot server %s:%d success!",host.c_str(), port);
+        ROS_WARN("Connect robot server %s:%d success!",host.c_str(), port);
         _isConnected = true;
 
-        SETUPPARAM parameters;
-        if (robot.Setup(name.c_str(), parameters, REAL_MODE) == SUCCEED)
+        SetupParam parameters;
+        RobotEvent result;
+        if (debug)
         {
-            buildMap();
+            result = robot.Setup(name.c_str(), parameters, SetupMode_VirtualMode);
+        }
+        else
+        {
+            result = robot.Setup(name.c_str(), parameters, SetupMode_RealMode);
+        }
 
-            _isSetup = true;
-            ROS_INFO("Robot setup succeed");
+        if (result == RobotEvent_Succeed)
+        {
+            result == robot.get_motor_ids(ids_size, motor_ids);
+            if (result == RobotEvent_Succeed)
+            {
+                angles_publisher = handle.advertise<neo_msgs::JointAngles>("robot_angles", 1);
+                velocity_publisher = handle.advertise<neo_msgs::JointVelocity>("robot_velocity", 1);
+                current_publisher = handle.advertise<neo_msgs::JointCurrent>("robot_current", 1);
+                ROS_WARN("Topic node setup succeed");
 
-            robot.get_motor_ids(motor_ids);
+                MoveToAngles_server = handle.advertiseService("robot_move_to_angles", &NeoDriver::executeMoveToAngles, this);
+                MoveToPose_server = handle.advertiseService("robot_move_to_pose", &NeoDriver::executeMoveToPose, this);
 
-            publish_timer = handle.createTimer(ros::Duration(0.5),&NeoDriver::timerCallback,this);
-            publish_timer.stop();
-            angles_publisher = handle.advertise<neo_msgs::JointAngles>("robot_angles", 1);
-            velocity_publisher = handle.advertise<neo_msgs::JointVelocity>("robot_velocity", 1);
-            current_publisher = handle.advertise<neo_msgs::JointCurrent>("robot_current", 1);
+                Release_server = handle.advertiseService("robot_release", &NeoDriver::executeRelease, this);
+                Hold_server = handle.advertiseService("robot_hold", &NeoDriver::executeHold, this);
+                Stop_server = handle.advertiseService("robot_stop", &NeoDriver::executeStop, this);
+                Recover_server = handle.advertiseService("robot_recover", &NeoDriver::executeRecover, this);
+                Calibrate_server = handle.advertiseService("robot_calibrate", &NeoDriver::executeCalibrate, this);
+                Reset_server = handle.advertiseService("robot_reset", &NeoDriver::executeReset, this);
 
-            robotcmd_server = handle.advertiseService("robot_cmd", &NeoDriver::executeCMDCallback, this);
+                GetMotorIds_server = handle.advertiseService("robot_get_motor_ids", &NeoDriver::executeGetMotorIds, this);
 
-            publish_timer.start();
+                Forward_server = handle.advertiseService("robot_forward", &NeoDriver::executeForward, this);
+                Inverse_server = handle.advertiseService("robot_inverse", &NeoDriver::executeInverse, this);
+
+                GetInput_server = handle.advertiseService("robot_get_input", &NeoDriver::executeGetInput, this);
+                SetOutput_server = handle.advertiseService("robot_set_output", &NeoDriver::executeSetOutput, this);
+                
+                SetEOATAction_server = handle.advertiseService("robot_set_EOAT_action", &NeoDriver::executeSetEOATAction, this);
+                ROS_WARN("Service node setup succeed");
+
+                publish_timer = handle.createTimer(ros::Duration(0.1),&NeoDriver::timerCallback,this);
+                //publish_timer.stop();
+                publish_timer.start();
+                ROS_WARN("Timer start");
+
+                _isSetup = true;
+                ROS_WARN("Robot setup succeed");
+            }
+            else
+            {
+                _isSetup = false;
+                ROS_WARN("Robot setup failed");
+                exit(1);
+            }
         }
         else
         {
             _isSetup = false;
             ROS_WARN("Robot setup failed");
+            exit(1);
         }
     }
     else
     {
         ROS_WARN("Connect robot server %s:%d failure!",host.c_str(),port);
         _isConnected = false;
+        exit(1);
     }
 }
 
@@ -46,11 +85,13 @@ NeoDriver::~NeoDriver()
     if(_isSetup)
     {
         robot.Shutdown();
+        _isSetup = false;
+        ROS_WARN("Robot shutdown succeed");
     }
 
-    if(robot.RobotLogout() == SUCCEED)
+    if(robot.RobotLogout() == RobotEvent_Succeed)
     {
-        ROS_INFO("Logout succeed");
+        ROS_WARN("Logout succeed");
         _isConnected = false;
     }
     else
@@ -65,22 +106,25 @@ void NeoDriver::timerCallback(const ros::TimerEvent& e)
     neo_msgs::JointVelocity joint_velocity;
     neo_msgs::JointCurrent joint_current;
 
-    vector<double> _angles;
-    vector<double> _velocity;
-    vector<double> _current;
+    vector<double> _angles_msg;
+    vector<double> _velocity_msg;
+    vector<double> _current_msg;
+
+    double _angles[MAX_MOTORS];
+    double _velocity[MAX_MOTORS];
+    double _current[MAX_MOTORS];
+
     if(_isSetup)
     {
-        if(robot.get_angles(motor_ids, _angles) == SUCCEED)
+        robot.get_angles(ids_size, motor_ids, _angles);
+        robot.get_velocity(ids_size, motor_ids, _velocity);
+        robot.get_current(ids_size, motor_ids, _current);
+
+        for (size_t i = 0; i < ids_size; i++)
         {
-            joint_angles.angles.assign(_angles.begin(), _angles.end());
-        }
-        if(robot.get_velocity(motor_ids, _velocity) == SUCCEED)
-        {
-            joint_velocity.velocity.assign(_velocity.begin(), _velocity.end());
-        }
-        if(robot.get_current(motor_ids, _current) == SUCCEED)
-        {
-            joint_current.current.assign(_current.begin(), _current.end());
+            joint_angles.angles.push_back(_angles[i]);
+            joint_velocity.velocity.push_back(_velocity[i]);
+            joint_current.current.push_back(_current[i]);
         }
 
         angles_publisher.publish(joint_angles);
@@ -89,356 +133,253 @@ void NeoDriver::timerCallback(const ros::TimerEvent& e)
     }
 }
 
-void NeoDriver::buildMap()
-{ 
-	strFuncMap["move_to_angles"] = &NeoDriver::func_move_to_angles; 
-	strFuncMap["move_to_position"] = &NeoDriver::func_move_to_position;
-	strFuncMap["stop"] = &NeoDriver::func_stop; 
-	strFuncMap["recover"] = &NeoDriver::func_recover;
-    strFuncMap["release"] = &NeoDriver::func_release; 
-	strFuncMap["hold"] = &NeoDriver::func_hold;
-    strFuncMap["calibrate"] = &NeoDriver::func_calibrate; 
-	strFuncMap["reset"] = &NeoDriver::func_reset;
-    strFuncMap["test"] = &NeoDriver::func_test;
-    strFuncMap["stop_test"] = &NeoDriver::func_stoptest;
-}
-
-bool NeoDriver::executeCMDCallback(neo_msgs::RobotCMD::Request &req, neo_msgs::RobotCMD::Response &res)
+bool NeoDriver::executeMoveToAngles(neo_msgs::MoveToAngles::Request &req, neo_msgs::MoveToAngles::Response &res)
 {
-    std::string func_name = req.target;
-    std::string func_args = req.args;
+    size_t _size = req.motor_ids.size();
+    int _motor_ids[MAX_MOTORS];
+    double _angles[MAX_MOTORS];
 
-    int ret = callFunc(func_name, func_args);
-
-    res.result = ret;
-    return true;
-}
-
-int NeoDriver::callFunc(std::string& name, std::string &args) 
-{
-    ROS_INFO("Call func %s", name.c_str());
-    int ret = 0;  
-    if(strFuncMap.count(name))
+    for (size_t i = 0; i < _size; i++)
     {
-        ret = (this->*strFuncMap[name])(args);
+        _motor_ids[i] = req.motor_ids.at(i);
+        _angles[i] = req.angles.at(i);
+    }
+
+    float _velocity = req.velocity;
+    float _acceleration = req.velocity;
+
+    RelativeMode _mode;
+    if (req.relative == true)
+    {
+        _mode = RelativeMode_Relative;
     }
     else
     {
-        ROS_WARN("Call func failed");
+        _mode = RelativeMode_Absolute;
     }
-    return ret;
-}
 
-int NeoDriver::func_move_to_angles(std::string args)
-{
-    vector<char> _motor_ids;
-    vector<double> _angles;
-    float _velocity;
-    int _acceleration;
-    int _relative;
-    int _block;
+    RobotEvent ret = robot.move_to_angles(_size, _motor_ids, _angles, _velocity, _acceleration, _mode);
 
-    std::vector<string> args_div;
-    __SplitString(args, args_div, ",");
-    for (int i = 0; i != args_div.size(); i++)
+    if (req.block == true)
     {
-        std::vector<string> arg_div;
-        __SplitString(args_div[i], arg_div, "=");
-        string _name = arg_div[0];
-        string _param = arg_div[1];
-
-        _name.erase(std::remove(_name.begin(), _name.end(), ' '), _name.end());
-        if (!_name.compare("motor_ids"))
-        {
-            _param.erase(std::remove(_param.begin(), _param.end(), '['), _param.end());
-            _param.erase(std::remove(_param.begin(), _param.end(), ']'), _param.end());
-            _param.erase(std::remove(_param.begin(), _param.end(), '\''), _param.end());
-
-            std::vector<string> param_div;
-            __SplitString(_param, param_div, " ");
-            for (int j = 0; j != param_div.size(); j++)
-            {
-                char id = param_div[j][0];
-                _motor_ids.push_back(id);
-            }
-        }
-        else if(!_name.compare("angles"))
-        {
-            _param.erase(std::remove(_param.begin(), _param.end(), '['), _param.end());
-            _param.erase(std::remove(_param.begin(), _param.end(), ']'), _param.end());
-            _param.erase(std::remove(_param.begin(), _param.end(), '\''), _param.end());
-
-            std::vector<string> param_div;
-            __SplitString(_param, param_div, " ");
-            for (int j = 0; j != param_div.size(); j++)
-            {
-                _angles.push_back(stof(param_div[j]));
-            }
-        }
-        else if(!_name.compare("velocity"))
-        {
-            _velocity = stof(_param);
-        }
-        else if(!_name.compare("acceleration"))
-        {
-            _acceleration = stoi(_param);
-        }
-        else if(!_name.compare("relative"))
-        {
-            _relative = stoi(_param);
-        }
-        else if(!_name.compare("block"))
-        {
-            _block = stoi(_param);
-        }
-        else
-        {
-            return 0;
-        }
+        RobotEvent ret = robot.wait_for_motors(_size, _motor_ids);
     }
 
-    robot.move_to_angles(_motor_ids, _angles, _velocity, _acceleration, _relative);
-    if (_block)
+    res.event = ret;
+    return true;
+}
+
+bool NeoDriver::executeMoveToPose(neo_msgs::MoveToPose::Request &req, neo_msgs::MoveToPose::Response &res)
+{
+    Pose _pose;
+    _pose.position.x = req.pose.x;
+    _pose.position.y = req.pose.y;
+    _pose.position.z = req.pose.z;
+    _pose.orientation.Rx = req.pose.Rx;
+    _pose.orientation.Ry = req.pose.Ry;
+    _pose.orientation.Rz = req.pose.Rz;
+
+    float _velocity = req.velocity;
+    float _acceleration = req.velocity;
+
+    RelativeMode _mode;
+    if (req.relative == true)
     {
-        robot.wait_for_motors(_motor_ids);
+        _mode = RelativeMode_Relative;
     }
-    return 1;
-}
-
-int NeoDriver::func_move_to_position(std::string args)
-{
-    POSE _position;
-    float _velocity;
-    int _acceleration;
-    int _relative;
-    int _block;
-
-    std::vector<string> args_div;
-    __SplitString(args, args_div, ",");
-    for (int i = 0; i != args_div.size(); i++)
+    else
     {
-        std::vector<string> arg_div;
-        __SplitString(args_div[i], arg_div, "=");
-        string _name = arg_div[0];
-        string _param = arg_div[1];
-
-        _name.erase(std::remove(_name.begin(), _name.end(), ' '), _name.end());
-        if(!_name.compare("position"))
-        {
-            _param.erase(std::remove(_param.begin(), _param.end(), '['), _param.end());
-            _param.erase(std::remove(_param.begin(), _param.end(), ']'), _param.end());
-            _param.erase(std::remove(_param.begin(), _param.end(), '\''), _param.end());
-
-            std::vector<string> param_div;
-            __SplitString(_param, param_div, " ");
-            if (param_div.size() != 6)
-            {
-                return 0;
-            }
-            _position.position.x = stof(param_div[0]);
-            _position.position.y = stof(param_div[1]);
-            _position.position.z = stof(param_div[2]);
-            _position.orientation.roll = stof(param_div[3]);
-            _position.orientation.pitch = stof(param_div[4]);
-            _position.orientation.yaw = stof(param_div[5]);
-        }
-        else if(!_name.compare("velocity"))
-        {
-            _velocity = stof(_param);
-        }
-        else if(!_name.compare("acceleration"))
-        {
-            _acceleration = stoi(_param);
-        }
-        else if(!_name.compare("relative"))
-        {
-            _relative = stoi(_param);
-        }
-        else if(!_name.compare("block"))
-        {
-            _block = stoi(_param);
-        }
-        else
-        {
-            return 0;
-        }
+        _mode = RelativeMode_Absolute;
     }
 
-    robot.move_to_position(_position, _velocity, _acceleration, _relative);
-    if (_block)
+    RobotEvent ret = robot.move_to_pose(_pose, _velocity, _acceleration, _mode);
+
+    if (req.block == true)
     {
-        robot.wait_for_motors(motor_ids);
+        RobotEvent ret = robot.wait_for_motors(ids_size, motor_ids);
     }
-    return 1;
+
+    res.event = ret;
+    return true;
 }
 
-int NeoDriver::func_stop(std::string args)
+bool NeoDriver::executeRelease(neo_msgs::Release::Request &req, neo_msgs::Release::Response &res)
 {
-    robot.stop();
-    return 1;
-}
+    size_t _size = req.motor_ids.size();
+    int _motor_ids[MAX_MOTORS];
 
-int NeoDriver::func_recover(std::string args)
-{
-    robot.recover();
-    return 1;
-}
-
-int NeoDriver::func_release(std::string args)
-{
-    vector<char> _motor_ids;
-
-    std::vector<string> args_div;
-    __SplitString(args, args_div, "=");
-    string _name = args_div[0];
-    string _param = args_div[1];
-
-    _name.erase(std::remove(_name.begin(), _name.end(), ' '), _name.end());
-    if (!_name.compare("motor_ids"))
+    for (size_t i = 0; i < _size; i++)
     {
-        _param.erase(std::remove(_param.begin(), _param.end(), '['), _param.end());
-        _param.erase(std::remove(_param.begin(), _param.end(), ']'), _param.end());
-        _param.erase(std::remove(_param.begin(), _param.end(), '\''), _param.end());
-
-        std::vector<string> param_div;
-        __SplitString(_param, param_div, " ");
-        for (int i = 0; i != param_div.size(); i++)
-        {
-            char id = param_div[i][0];
-            _motor_ids.push_back(id);
-        }
+        _motor_ids[i] = req.motor_ids.at(i);
     }
 
-    robot.release(_motor_ids);
-    return 1;
+    RobotEvent ret = robot.release(_size, _motor_ids);
+
+    res.event = ret;
+    return true;
 }
 
-int NeoDriver::func_hold(std::string args)
+bool NeoDriver::executeHold(neo_msgs::Hold::Request &req, neo_msgs::Hold::Response &res)
 {
-    vector<char> _motor_ids;
+    size_t _size = req.motor_ids.size();
+    int _motor_ids[MAX_MOTORS];
 
-    std::vector<string> args_div;
-    __SplitString(args, args_div, "=");
-    string _name = args_div[0];
-    string _param = args_div[1];
-
-    _name.erase(std::remove(_name.begin(), _name.end(), ' '), _name.end());
-    if (!_name.compare("motor_ids"))
+    for (size_t i = 0; i < _size; i++)
     {
-        _param.erase(std::remove(_param.begin(), _param.end(), '['), _param.end());
-        _param.erase(std::remove(_param.begin(), _param.end(), ']'), _param.end());
-        _param.erase(std::remove(_param.begin(), _param.end(), '\''), _param.end());
-
-        std::vector<string> param_div;
-        __SplitString(_param, param_div, " ");
-        for (int i = 0; i != param_div.size(); i++)
-        {
-            char id = param_div[i][0];
-            _motor_ids.push_back(id);
-        }
+        _motor_ids[i] = req.motor_ids.at(i);
     }
 
-    robot.hold(_motor_ids);
-    return 1;
+    RobotEvent ret = robot.hold(_size, _motor_ids);
+
+    res.event = ret;
+    return true;
 }
 
-int NeoDriver::func_calibrate(std::string args)
+bool NeoDriver::executeStop(neo_msgs::Stop::Request &req, neo_msgs::Stop::Response &res)
 {
-    robot.calibrate();
-    return 1;
+    RobotEvent ret = robot.stop();
+
+    res.event = ret;
+    return true;
 }
 
-int NeoDriver::func_reset(std::string args)
+bool NeoDriver::executeRecover(neo_msgs::Recover::Request &req, neo_msgs::Recover::Response &res)
 {
-    robot.reset();
-    return 1;
+    RobotEvent ret = robot.recover();
+
+    res.event = ret;
+    return true;
 }
 
-int NeoDriver::func_test(std::string args)
+bool NeoDriver::executeCalibrate(neo_msgs::Calibrate::Request &req, neo_msgs::Calibrate::Response &res)
 {
-    _isTest = true;
+    RobotEvent ret = robot.calibrate();
 
-    vector<char> _motor_ids;
-    vector<double> _angles;
-    float _velocity;
-    int _acceleration;
-    int _relative;
-    int _block;
+    res.event = ret;
+    return true;
+}
 
-    _motor_ids.push_back('1');
-    _motor_ids.push_back('2');
-    _motor_ids.push_back('3');
-    _motor_ids.push_back('4');
-    _motor_ids.push_back('5');
-    _motor_ids.push_back('6');
+bool NeoDriver::executeReset(neo_msgs::Reset::Request &req, neo_msgs::Reset::Response &res)
+{
+    RobotEvent ret = robot.reset();
 
-    _velocity = 20.0;
-    _acceleration = 70.0;
-    _relative = 0;
-    _block = 1;
+    res.event = ret;
+    return true;
+}
 
-    while(_isTest)
+bool NeoDriver::executeGetMotorIds(neo_msgs::GetMotorIds::Request &req, neo_msgs::GetMotorIds::Response &res)
+{
+    for (size_t i = 0; i < ids_size; i++)
     {
-        _angles.clear();
-        _angles.push_back(getRandData(-30, 30));
-        _angles.push_back(getRandData(-30, 30));
-        _angles.push_back(getRandData(-60, 60));
-        _angles.push_back(getRandData(-90, 90));
-        _angles.push_back(getRandData(-60, 60));
-        _angles.push_back(getRandData(-90, 90));
-
-        robot.move_to_angles(_motor_ids, _angles, _velocity, _acceleration, _relative);
-        if (_block)
-        {
-            robot.wait_for_motors(_motor_ids);
-        }
+        res.motor_ids.push_back(motor_ids[i]);
     }
 
-    return 1;
+    res.event = RobotEvent_Succeed;
+    return true;
 }
 
-int NeoDriver::func_stoptest(std::string args)
+bool NeoDriver::executeForward(neo_msgs::Forward::Request &req, neo_msgs::Forward::Response &res)
 {
-    _isTest = false;
-    robot.stop();
-    sleep(0.5);
-    robot.recover();
-    return 1;
-}
+    double _angles[MAX_MOTORS];
+    Pose pose;
 
-double NeoDriver::getRandData(int min, int max)
-{
-    double m1 = (double)(rand()%101)/101;
-    min++;
-    double m2 = (double)((rand()%(max-min+1))+min);
-    m2=m2-1;
-    return m1+m2;
-}
-
-
-void NeoDriver::__SplitString(const std::string &s, std::vector<string> &v, const std::string &c)
-{
-    v.clear();
-    std::string::size_type pos1, pos2;
-    pos2 = s.find(c);
-    pos1 = 0;
-    while (std::string::npos != pos2)
+    for (size_t i = 0; i < ids_size; i++)
     {
-        v.push_back(s.substr(pos1, pos2 - pos1));
-        pos1 = pos2 + c.size();
-        pos2 = s.find(c, pos1);
+        _angles[i] = req.angles.at(i);
     }
-    if (pos1 != s.length())
-        v.push_back(s.substr(pos1));
+
+    RobotEvent ret = robot.forward(_angles, pose);
+
+    res.pose.x = pose.position.x;
+    res.pose.y = pose.position.y;
+    res.pose.z = pose.position.z;
+    res.pose.Rx = pose.orientation.Rx;
+    res.pose.Ry = pose.orientation.Ry;
+    res.pose.Rz = pose.orientation.Rz;
+
+    res.event = ret;
+    return true;
 }
 
-int main(int argc, char **argv) {
+bool NeoDriver::executeInverse(neo_msgs::Inverse::Request &req, neo_msgs::Inverse::Response &res)
+{
+    Pose _pose;
+    _pose.position.x = req.pose.x;
+    _pose.position.y = req.pose.y;
+    _pose.position.z = req.pose.z;
+    _pose.orientation.Rx = req.pose.Rx;
+    _pose.orientation.Ry = req.pose.Ry;
+    _pose.orientation.Rz = req.pose.Rz;
+
+    double _angles[MAX_MOTORS];
+
+    RobotEvent ret = robot.inverse(_pose, _angles);
+
+    for (size_t i = 0; i < ids_size; i++)
+    {
+        res.angles.push_back(_angles[i]);
+    }
+
+    res.event = ret;
+    return true;
+}
+
+bool NeoDriver::executeGetInput(neo_msgs::GetInput::Request &req, neo_msgs::GetInput::Response &res)
+{
+    size_t _size = req.motor_ids.size();
+    int _motor_ids[MAX_MOTORS];
+    int _signal[MAX_MOTORS];
+
+    for (size_t i = 0; i < _size; i++)
+    {
+        _motor_ids[i] = req.motor_ids.at(i);
+    }
+
+    RobotEvent ret = robot.get_input(_size, _motor_ids, _signal);
+
+    for (size_t i = 0; i < _size; i++)
+    {
+        res.signal.push_back(_signal[i]);
+    }
+
+    res.event = ret;
+    return true;
+}
+
+bool NeoDriver::executeSetOutput(neo_msgs::SetOutput::Request &req, neo_msgs::SetOutput::Response &res)
+{
+    size_t _size = req.motor_ids.size();
+    int _motor_ids[MAX_MOTORS];
+    int _signal[MAX_MOTORS];
+
+    for (size_t i = 0; i < _size; i++)
+    {
+        _motor_ids[i] = req.motor_ids.at(i);
+        _signal[i] = req.signal.at(i);
+    }
+
+    RobotEvent ret = robot.set_output(_size, _motor_ids, _signal);
+
+    res.event = ret;
+    return true;
+}
+
+bool NeoDriver::executeSetEOATAction(neo_msgs::SetEOATAction::Request &req, neo_msgs::SetEOATAction::Response &res)
+{
+    RobotEvent ret = robot.set_EOAT_action(req.name.c_str(), req.action.c_str());
+
+    res.event = ret;
+    return true;
+}
+
+int main(int argc, char **argv) 
+{
 	std::string host;
 	int port;
     std::string name;
+    bool debug;
 
 	ros::init(argc, argv, "neo_driver");
-
 	if (!(ros::param::get("~robot_ip", host))) 
     {
 		if (argc > 1) 
@@ -483,12 +424,29 @@ int main(int argc, char **argv) {
 		}
 	}
 
-	NeoDriver neoDriver(host, port, name);
+    if (!(ros::param::get("~debug", debug))) 
+    {
+		if (argc > 4) 
+        {
+			if(strcmp(argv[4], "true") == 0)
+            {
+                debug = true;
+            }
+            else
+            {
+                debug = false;
+            }
+		}
+        else
+		{
+            ROS_WARN("Could not get debug mode. Please supply it as command line parameter or on the parameter server as debug");
+			exit(1);
+		}
+	}
 
+	NeoDriver neoDriver(host, port, name, debug);
     ros::AsyncSpinner spinner(6);
 	spinner.start();
-
 	ros::waitForShutdown();
-
 	return(0);
 }

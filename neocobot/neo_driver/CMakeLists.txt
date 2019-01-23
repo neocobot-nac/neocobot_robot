@@ -23,7 +23,7 @@ message(STATUS " CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH}")
 
 # find API
 FIND_PACKAGE(api REQUIRED)
-INCLUDE_DIRECTORIES(${libneocobot_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${libneoclient_INCLUDE_DIRS})
 
 ## Declare a C++ executable
 set(${PROJECT_NAME}_SOURCES
@@ -31,7 +31,7 @@ set(${PROJECT_NAME}_SOURCES
 add_executable(neo_driver ${${PROJECT_NAME}_SOURCES})
 add_dependencies(neo_driver neo_msgs_gencpp)
 ## Specify libraries to link a library or executable target against
-target_link_libraries(neo_driver ${catkin_LIBRARIES} ${libneocobot} ${libtinyxml} pthread log4cplus)
+target_link_libraries(neo_driver ${catkin_LIBRARIES} ${libneoclient} pthread)
 
 #############
 ## Install ##

@@ -1,18 +1,19 @@
+<?xml version="1.0"?>
 <package>
-
   <name>omni_6_moveit_config</name>
-  <version>0.3.0</version>
+  <version>0.2.0</version>
   <description>
      An automatically generated package with all the configuration and launch files for using the omni_6_robot with the MoveIt! Motion Planning Framework
   </description>
-  <author email="shaojie@neocobot.com">Huang Shaojie</author>
+
   <maintainer email="shaojie@neocobot.com">Huang Shaojie</maintainer>
 
   <license>BSD</license>
 
-  <url type="website">http://moveit.ros.org/</url>
-  <url type="bugtracker">https://github.com/ros-planning/moveit/issues</url>
-  <url type="repository">https://github.com/ros-planning/moveit</url>
+  <url type="website">http://github.com/neocobot-nac/NeoROS.git</url>
+
+  <author>Huang Shaojie</author>
+  <author email="shaojie@neocobot.com">Huang Shaojie</author>
 
   <buildtool_depend>catkin</buildtool_depend>
 

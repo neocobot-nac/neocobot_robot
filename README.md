@@ -1,5 +1,5 @@
 # NeoROS
-ROS package for Neocobot's Arm.
+ROS package for Neocobot's arm.
 
 # Build
 NeoROS package depends on C++11.

@@ -10,4 +10,4 @@ set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 
 # Tutorial
 
-To be continued
+The wiki page for Gazebo is available [here](https://github.com/Kinovarobotics/kinova-ros/wiki/Gazebo)

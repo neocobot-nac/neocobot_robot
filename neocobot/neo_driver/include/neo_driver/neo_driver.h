@@ -25,6 +25,9 @@
 #include "neo_msgs/SetEOATAction.h"
 #include "neo_msgs/SetOutput.h"
 #include "neo_msgs/Stop.h"
+#include "neo_msgs/MoveJ.h"
+#include "neo_msgs/MoveL.h"
+#include "neo_msgs/MoveP.h"
 
 class NeoDriver {
 private:
@@ -41,9 +44,13 @@ private:
     ros::Publisher angles_publisher;
     ros::Publisher current_publisher;
     ros::Publisher velocity_publisher;
+    ros::Publisher pose_publisher;
 
     ros::ServiceServer MoveToAngles_server;
     ros::ServiceServer MoveToPose_server;
+    ros::ServiceServer MoveJ_server;
+    ros::ServiceServer MoveL_server;
+    ros::ServiceServer MoveP_server;
     ros::ServiceServer Release_server;
     ros::ServiceServer Hold_server;
     ros::ServiceServer Stop_server;
@@ -65,6 +72,9 @@ public:
 
     bool executeMoveToAngles(neo_msgs::MoveToAngles::Request &req, neo_msgs::MoveToAngles::Response &res);
     bool executeMoveToPose(neo_msgs::MoveToPose::Request &req, neo_msgs::MoveToPose::Response &res);
+    bool executeMoveJ(neo_msgs::MoveJ::Request &req, neo_msgs::MoveJ::Response &res);
+    bool executeMoveL(neo_msgs::MoveL::Request &req, neo_msgs::MoveL::Response &res);
+    bool executeMoveP(neo_msgs::MoveP::Request &req, neo_msgs::MoveP::Response &res);
     bool executeRelease(neo_msgs::Release::Request &req, neo_msgs::Release::Response &res);
     bool executeHold(neo_msgs::Hold::Request &req, neo_msgs::Hold::Response &res);
     bool executeStop(neo_msgs::Stop::Request &req, neo_msgs::Stop::Response &res);

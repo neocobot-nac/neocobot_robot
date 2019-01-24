@@ -26,6 +26,9 @@ add_service_files(FILES
   SetEOATAction.srv
   SetOutput.srv
   Stop.srv
+  MoveJ.srv
+  MoveL.srv
+  MoveP.srv
 )
 
 generate_messages(DEPENDENCIES

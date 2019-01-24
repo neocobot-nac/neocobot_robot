@@ -21,10 +21,10 @@ int main(int argc, char** argv)
 	ros::NodeHandle handle;
 
 	ros::Publisher rvizJointStatesPublisher = handle.advertise<sensor_msgs::JointState>("joint_states", 1);
-	ros::Subscriber anglesSubscriber = handle.subscribe("robot_angles", 100, anglesCallback);
+	ros::Subscriber anglesSubscriber = handle.subscribe("neo_angles", 10, anglesCallback);
 
 	tf::TransformBroadcaster broadcaster;
-    ros::Rate loop_rate(100);
+    ros::Rate loop_rate(10);
 
     joints_name[1] = "first_joint";
     joints_name[2] = "second_joint";

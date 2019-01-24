@@ -23,30 +23,35 @@ NeoDriver::NeoDriver(std::string host, int port, std::string name, bool debug)
             result == robot.get_motor_ids(ids_size, motor_ids);
             if (result == RobotEvent_Succeed)
             {
-                angles_publisher = handle.advertise<neo_msgs::JointAngles>("robot_angles", 1);
-                velocity_publisher = handle.advertise<neo_msgs::JointVelocity>("robot_velocity", 1);
-                current_publisher = handle.advertise<neo_msgs::JointCurrent>("robot_current", 1);
+                angles_publisher = handle.advertise<neo_msgs::JointAngles>("neo_angles", 1);
+                velocity_publisher = handle.advertise<neo_msgs::JointVelocity>("neo_velocity", 1);
+                current_publisher = handle.advertise<neo_msgs::JointCurrent>("neo_current", 1);
+                pose_publisher = handle.advertise<neo_msgs::EndPose>("neo_pose", 1);
                 ROS_WARN("Topic node setup succeed");
 
-                MoveToAngles_server = handle.advertiseService("robot_move_to_angles", &NeoDriver::executeMoveToAngles, this);
-                MoveToPose_server = handle.advertiseService("robot_move_to_pose", &NeoDriver::executeMoveToPose, this);
+                MoveToAngles_server = handle.advertiseService("neo_move_to_angles", &NeoDriver::executeMoveToAngles, this);
+                MoveToPose_server = handle.advertiseService("neo_move_to_pose", &NeoDriver::executeMoveToPose, this);
 
-                Release_server = handle.advertiseService("robot_release", &NeoDriver::executeRelease, this);
-                Hold_server = handle.advertiseService("robot_hold", &NeoDriver::executeHold, this);
-                Stop_server = handle.advertiseService("robot_stop", &NeoDriver::executeStop, this);
-                Recover_server = handle.advertiseService("robot_recover", &NeoDriver::executeRecover, this);
-                Calibrate_server = handle.advertiseService("robot_calibrate", &NeoDriver::executeCalibrate, this);
-                Reset_server = handle.advertiseService("robot_reset", &NeoDriver::executeReset, this);
+                MoveJ_server = handle.advertiseService("neo_moveJ", &NeoDriver::executeMoveJ, this);
+                MoveL_server = handle.advertiseService("neo_moveL", &NeoDriver::executeMoveL, this);
+                MoveP_server = handle.advertiseService("neo_moveP", &NeoDriver::executeMoveP, this);
 
-                GetMotorIds_server = handle.advertiseService("robot_get_motor_ids", &NeoDriver::executeGetMotorIds, this);
+                Release_server = handle.advertiseService("neo_release", &NeoDriver::executeRelease, this);
+                Hold_server = handle.advertiseService("neo_hold", &NeoDriver::executeHold, this);
+                Stop_server = handle.advertiseService("neo_stop", &NeoDriver::executeStop, this);
+                Recover_server = handle.advertiseService("neo_recover", &NeoDriver::executeRecover, this);
+                Calibrate_server = handle.advertiseService("neo_calibrate", &NeoDriver::executeCalibrate, this);
+                Reset_server = handle.advertiseService("neo_reset", &NeoDriver::executeReset, this);
 
-                Forward_server = handle.advertiseService("robot_forward", &NeoDriver::executeForward, this);
-                Inverse_server = handle.advertiseService("robot_inverse", &NeoDriver::executeInverse, this);
+                GetMotorIds_server = handle.advertiseService("neo_get_motor_ids", &NeoDriver::executeGetMotorIds, this);
 
-                GetInput_server = handle.advertiseService("robot_get_input", &NeoDriver::executeGetInput, this);
-                SetOutput_server = handle.advertiseService("robot_set_output", &NeoDriver::executeSetOutput, this);
+                Forward_server = handle.advertiseService("neo_forward", &NeoDriver::executeForward, this);
+                Inverse_server = handle.advertiseService("neo_inverse", &NeoDriver::executeInverse, this);
+
+                GetInput_server = handle.advertiseService("neo_get_input", &NeoDriver::executeGetInput, this);
+                SetOutput_server = handle.advertiseService("neo_set_output", &NeoDriver::executeSetOutput, this);
                 
-                SetEOATAction_server = handle.advertiseService("robot_set_EOAT_action", &NeoDriver::executeSetEOATAction, this);
+                SetEOATAction_server = handle.advertiseService("neo_set_EOAT_action", &NeoDriver::executeSetEOATAction, this);
                 ROS_WARN("Service node setup succeed");
 
                 publish_timer = handle.createTimer(ros::Duration(0.1),&NeoDriver::timerCallback,this);
@@ -105,6 +110,7 @@ void NeoDriver::timerCallback(const ros::TimerEvent& e)
     neo_msgs::JointAngles joint_angles;
     neo_msgs::JointVelocity joint_velocity;
     neo_msgs::JointCurrent joint_current;
+    neo_msgs::EndPose end_pose;
 
     vector<double> _angles_msg;
     vector<double> _velocity_msg;
@@ -113,12 +119,14 @@ void NeoDriver::timerCallback(const ros::TimerEvent& e)
     double _angles[MAX_MOTORS];
     double _velocity[MAX_MOTORS];
     double _current[MAX_MOTORS];
+    Pose _pose;
 
     if(_isSetup)
     {
         robot.get_angles(ids_size, motor_ids, _angles);
         robot.get_velocity(ids_size, motor_ids, _velocity);
         robot.get_current(ids_size, motor_ids, _current);
+        robot.get_pose(_pose);
 
         for (size_t i = 0; i < ids_size; i++)
         {
@@ -127,9 +135,17 @@ void NeoDriver::timerCallback(const ros::TimerEvent& e)
             joint_current.current.push_back(_current[i]);
         }
 
+        end_pose.x = _pose.position.x ;
+        end_pose.y = _pose.position.y;
+        end_pose.z = _pose.position.z;
+        end_pose.Rx = _pose.orientation.Rx;
+        end_pose.Ry = _pose.orientation.Ry;
+        end_pose.Rz = _pose.orientation.Rz;
+
         angles_publisher.publish(joint_angles);
         velocity_publisher.publish(joint_velocity);
         current_publisher.publish(joint_current);
+        pose_publisher.publish(end_pose);
     }
 }
 
@@ -146,7 +162,7 @@ bool NeoDriver::executeMoveToAngles(neo_msgs::MoveToAngles::Request &req, neo_ms
     }
 
     float _velocity = req.velocity;
-    float _acceleration = req.velocity;
+    float _acceleration = req.acceleration;
 
     RelativeMode _mode;
     if (req.relative == true)
@@ -180,7 +196,7 @@ bool NeoDriver::executeMoveToPose(neo_msgs::MoveToPose::Request &req, neo_msgs::
     _pose.orientation.Rz = req.pose.Rz;
 
     float _velocity = req.velocity;
-    float _acceleration = req.velocity;
+    float _acceleration = req.acceleration;
 
     RelativeMode _mode;
     if (req.relative == true)
@@ -198,6 +214,122 @@ bool NeoDriver::executeMoveToPose(neo_msgs::MoveToPose::Request &req, neo_msgs::
     {
         RobotEvent ret = robot.wait_for_motors(ids_size, motor_ids);
     }
+
+    res.event = ret;
+    return true;
+}
+
+bool NeoDriver::executeMoveJ(neo_msgs::MoveJ::Request &req, neo_msgs::MoveJ::Response &res)
+{
+    size_t _size = req.points.size();
+    Pose _points[100];
+
+    for (size_t i = 0; i < _size; i++)
+    {
+        _points[i].position.x = req.points.at(i).x;
+        _points[i].position.y = req.points.at(i).y;
+        _points[i].position.z = req.points.at(i).z;
+        _points[i].orientation.Rx = req.points.at(i).Rx;
+        _points[i].orientation.Ry = req.points.at(i).Ry;
+        _points[i].orientation.Rz = req.points.at(i).Rz;
+    }
+
+    float _velocity = req.velocity;
+    float _acceleration = req.acceleration;
+    float _interval = req.interval;
+
+    TrajCloseMode _mode;
+    if (req.close == true)
+    {
+        _mode = TrajCloseMode_Closed;
+    }
+    else
+    {
+        _mode = TrajCloseMode_Open;
+    }
+
+    RobotEvent ret = robot.moveJ(_size, _points, _velocity, _acceleration, _interval, _mode);
+
+    res.event = ret;
+    return true;
+}
+
+bool NeoDriver::executeMoveL(neo_msgs::MoveL::Request &req, neo_msgs::MoveL::Response &res)
+{
+    size_t _size = req.points.size();
+    Pose _points[100];
+    double _radius[100];
+
+    for (size_t i = 0; i < _size; i++)
+    {
+        _points[i].position.x = req.points.at(i).x;
+        _points[i].position.y = req.points.at(i).y;
+        _points[i].position.z = req.points.at(i).z;
+        _points[i].orientation.Rx = req.points.at(i).Rx;
+        _points[i].orientation.Ry = req.points.at(i).Ry;
+        _points[i].orientation.Rz = req.points.at(i).Rz;
+    }
+
+    float _velocity = req.velocity;
+    float _acceleration = req.acceleration;
+    float _interval = req.interval;
+
+    TrajCloseMode _mode;
+    if (req.close == true)
+    {
+        _mode = TrajCloseMode_Closed;
+
+        for (size_t i = 0; i < _size; i++)
+        {
+            _radius[i] = req.radius.at(i);
+        }
+    }
+    else
+    {
+        _mode = TrajCloseMode_Open;
+
+        for (size_t i = 0; i < (_size - 2); i++)
+        {
+            _radius[i] = req.radius.at(i);
+        }
+    }
+
+    RobotEvent ret = robot.moveL(_size, _points, _radius, _velocity, _acceleration, _interval, _mode);
+
+    res.event = ret;
+    return true;
+}
+
+bool NeoDriver::executeMoveP(neo_msgs::MoveP::Request &req, neo_msgs::MoveP::Response &res)
+{
+    size_t _size = req.points.size();
+    Pose _points[100];
+
+    for (size_t i = 0; i < _size; i++)
+    {
+        _points[i].position.x = req.points.at(i).x;
+        _points[i].position.y = req.points.at(i).y;
+        _points[i].position.z = req.points.at(i).z;
+        _points[i].orientation.Rx = req.points.at(i).Rx;
+        _points[i].orientation.Ry = req.points.at(i).Ry;
+        _points[i].orientation.Rz = req.points.at(i).Rz;
+    }
+
+    float _velocity = req.velocity;
+    float _acceleration = req.acceleration;
+    float _interval = req.interval;
+
+    TrajCloseMode _mode;
+    if (req.close == true)
+    {
+        _mode = TrajCloseMode_Closed;
+    }
+    else
+    {
+        _mode = TrajCloseMode_Open;
+    }
+
+    RobotEvent ret = robot.moveP(_size, _points, _velocity, _acceleration, _interval, _mode);
 
     res.event = ret;
     return true;

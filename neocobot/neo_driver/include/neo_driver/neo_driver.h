@@ -89,4 +89,4 @@ public:
     bool executeSetEOATAction(neo_msgs::SetEOATAction::Request &req, neo_msgs::SetEOATAction::Response &res);
 };
 
-#endif /* AUBO_DRIVER_H_ */
+#endif

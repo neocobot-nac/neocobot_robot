@@ -1,3 +1,7 @@
+<p align="center">
+<img src="https://github.com/neocobot-nac/Image-Source/blob/master/Logo/neocobot.jpg" alt="Neocobot" title="Neocobot" width="557"/>
+</p>
+
 # NeoROS
 ROS package for Neocobot's arm.
 

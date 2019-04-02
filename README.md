@@ -22,7 +22,7 @@ This repository provides ROS support for the Neocobot robots, Omni-6 is supporte
 
 ## User manual
 
-The wiki page is available [here](https://github.com/neocobot-nac/NeoROS/wiki/User-Manual)
+The wiki page is available [here](https://github.com/neocobot-nac/NeoROS/wiki/home)
 
 <p align="center">
 Neocobot Technology © Copyright 2018. All rights Reserved.

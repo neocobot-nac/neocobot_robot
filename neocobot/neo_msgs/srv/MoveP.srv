@@ -1,7 +1,0 @@
-EndPose[] points
-float32 velocity
-float32 acceleration
-float32 interval
-bool close
----
-int32 event

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package>
+  <name>neocobot_robot</name>
+  <version>0.2.0</version>
+  <description>Metapackage for neocobot_robot</description>
+  <author>Huang Shaojie</author>
+  <author email="shaojie@neocobot.com">Huang Shaojie</author>
+  <maintainer email="shaojie@neocobot.com">Huang Shaojie</maintainer>
+  <url type="website">https://github.com/neocobot-nac/neocobot_robot</url>
+  <license>GPL-3.0</license>
+  
+  <buildtool_depend>catkin</buildtool_depend>
+  <run_depend>neo_bringup</run_depend>
+  <run_depend>neo_description</run_depend>
+  <run_depend>neo_gazebo</run_depend>
+  <run_depend>omni_6_moveit_config</run_depend>
+
+  <export>
+    <metapackage/>
+  </export>
+</package>

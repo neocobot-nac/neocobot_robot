@@ -9,7 +9,7 @@
   </include>
 
   <!-- Load the URDF and start rviz -->
-  <include file="$(find neo_description)/test/omni_6_rviz_test.launch" >
+  <include file="$(find neo_description)/launch/omni_6_rviz_test.launch" >
     <arg name="publish" value="false"/>
   </include>
 

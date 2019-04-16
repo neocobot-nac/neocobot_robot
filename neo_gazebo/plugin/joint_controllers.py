@@ -190,6 +190,7 @@ class JointControllersGui(QWidget):
 
     def __init__(self, title, joint_controllers):
         super(JointControllersGui, self).__init__()
+        self.setWindowTitle(title)
         self.joint_controllers = joint_controllers
         self.joint_map = {}
         self.num_rows = self.joint_controllers.joint_num

@@ -7,7 +7,7 @@
   <author email="shaojie@neocobot.com">Huang Shaojie</author>
   <maintainer email="shaojie@neocobot.com">Huang Shaojie</maintainer>
   <url type="website">https://github.com/neocobot-nac/NeoROS</url>
-  <license>BSD</license>
+  <license>GPL-3.0</license>
   
   <buildtool_depend>catkin</buildtool_depend>
   <run_depend>neo_description</run_depend>
@@ -23,7 +23,4 @@
   <run_depend>effort_controllers</run_depend>
   <run_depend>robot_state_publisher</run_depend>
   <run_depend>controller_manager</run_depend>
-
-  <export>
-  </export>
 </package>

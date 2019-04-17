@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package>
+  <name>neo_driver</name>
+  <version>0.2.0</version>
+  <description>
+      The neo_driver package for connect the TCP/IP Server.
+  </description>
+
+  <maintainer email="shaojie@neocobot.com">Huang Shaojie</maintainer>
+
+  <license>BSD</license>
+
+  <url type="website">http://github.com/neocobot-nac/NeoROS.git</url>
+
+  <author>Huang Shaojie</author>
+  <author email="shaojie@neocobot.com">Huang Shaojie</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>neo_msgs</build_depend>
+  <run_depend>roscpp</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>neo_msgs</run_depend>
+
+  <export>
+
+  </export>
+</package>

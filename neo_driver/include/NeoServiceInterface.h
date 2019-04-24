@@ -1,66 +1,66 @@
 #include <dlfcn.h>
 #include "NeoServiceMetaType.h"
 
-typedef NEOCStatus(*serviceLoginType)(const char*, short int);
-typedef NEOCStatus(*serviceLogoutType)();
-typedef NEOCStatus(*robotSetupType)(const char*, SetupParam, SetupMode);
-typedef NEOCStatus(*robotShutdownType)();
-typedef NEOCStatus(*robotMoveToAnglesType)(size_t, const int*, const double*, float, float, RelativeMode);
-typedef NEOCStatus(*robotMoveToPoseType)(Pose, float, float, RelativeMode);
-typedef NEOCStatus(*robotWaitForJointType)(size_t, const int*);
-typedef NEOCStatus(*robotMoveJType)(size_t, Pose*, float, float, float, TrajCloseMode);
-typedef NEOCStatus(*robotMoveLType)(size_t, Pose*, const double*, float, float, float, TrajCloseMode);
-typedef NEOCStatus(*robotMovePType)(size_t, Pose*, float, float, float, TrajCloseMode);
-typedef NEOCStatus(*robotReleaseType)(size_t, const int*);
-typedef NEOCStatus(*robotHoldType)(size_t, const int*);
-typedef NEOCStatus(*robotStopType)();
-typedef NEOCStatus(*robotRecoverType)();
-typedef NEOCStatus(*robotCalibrateType)();
-typedef NEOCStatus(*robotResetType)();
-typedef NEOCStatus(*robotGetJointIdsType)(size_t&, int*);
-typedef NEOCStatus(*robotGetAnglesType)(size_t, const int*, double*);
-typedef NEOCStatus(*robotGetVelocityType)(size_t, const int*, double*);
-typedef NEOCStatus(*robotGetCurrentType)(size_t, const int*, double*);
-typedef NEOCStatus(*robotGetPoseType)(Pose&);
-typedef NEOCStatus(*robotForwardKinematicType)(const double*, Pose&);
-typedef NEOCStatus(*robotInverseKinematicType)(Pose , double*);
-typedef NEOCStatus(*robotGetInputType)(size_t, const int*, int*);
-typedef NEOCStatus(*robotSetOutputType)(size_t, const int*, const int*);
-typedef NEOCStatus(*robotSetEOATActionType)(const char*, const char*);
+typedef NEOCStatus(*ServiceLoginType)(const char*, short int);
+typedef NEOCStatus(*ServiceLogoutType)();
+typedef NEOCStatus(*RobotSetupType)(const char*, unsigned int);
+typedef NEOCStatus(*RobotShutdownType)();
+typedef NEOCStatus(*RobotMoveToAnglesType)(size_t, const int*, const double*, const double, const double, unsigned int);
+typedef NEOCStatus(*RobotMoveToPoseType)(Pose, const double, const double, unsigned int);
+typedef NEOCStatus(*RobotWaitForJointsType)(size_t, const int*);
+typedef NEOCStatus(*RobotMoveJType)(size_t, Pose*, const double, const double, const double, unsigned int);
+typedef NEOCStatus(*RobotMoveLType)(size_t, Pose*, const double*, const double, const double, const double, unsigned int);
+typedef NEOCStatus(*RobotMovePType)(size_t, Pose*, const double, const double, const double, unsigned int);
+typedef NEOCStatus(*RobotReleaseType)(size_t, const int*);
+typedef NEOCStatus(*RobotHoldType)(size_t, const int*);
+typedef NEOCStatus(*RobotStopType)();
+typedef NEOCStatus(*RobotRecoverType)();
+typedef NEOCStatus(*RobotCalibrateType)();
+typedef NEOCStatus(*RobotResetType)();
+typedef NEOCStatus(*RobotGetJointIdsType)(size_t* , int*);
+typedef NEOCStatus(*RobotGetAnglesType)(size_t, const int*, double*);
+typedef NEOCStatus(*RobotGetVelocityType)(size_t, const int*, double*);
+typedef NEOCStatus(*RobotGetCurrentType)(size_t, const int*, double*);
+typedef NEOCStatus(*RobotGetPoseType)(Pose*);
+typedef NEOCStatus(*RobotForwardKinematicType)(const double*, Pose*);
+typedef NEOCStatus(*RobotInverseKinematicType)(Pose , double*);
+typedef NEOCStatus(*RobotGetInputType)(size_t, const int*, int*);
+typedef NEOCStatus(*RobotSetOutputType)(size_t, const int*, const int*);
+typedef NEOCStatus(*RobotSetEOATActionType)(const char*, const char*);
 
 class NeoServiceInterface
 {
 private:
-    const char* libname = "libneoserviceinterface.so";
-    void* libcb = NULL;
+    const char* NeoSI_lib = "libneoserviceinterface.so";
+    void* NeoSI = NULL;
 
 public:
-    serviceLoginType            serviceLoginFunc;
-    serviceLogoutType           serviceLogoutFunc;
-    robotSetupType              robotSetupFunc;
-    robotShutdownType           robotShutdownFunc;
-    robotMoveToAnglesType       robotMoveToAnglesFunc;
-    robotMoveToPoseType         robotMoveToPoseFunc;
-    robotWaitForJointType       robotWaitForJointFunc;
-    robotMoveJType              robotMoveJFunc;
-    robotMoveLType              robotMoveLFunc;
-    robotMovePType              robotMovePFunc;
-    robotReleaseType            robotReleaseFunc;
-    robotHoldType               robotHoldFunc;
-    robotStopType               robotStopFunc;
-    robotRecoverType            robotRecoverFunc;
-    robotCalibrateType          robotCalibrateFunc;
-    robotResetType              robotResetFunc;
-    robotGetJointIdsType        robotGetJointIdsFunc;
-    robotGetAnglesType          robotGetAnglesFunc;
-    robotGetVelocityType        robotGetVelocityFunc;
-    robotGetCurrentType         robotGetCurrentFunc;
-    robotGetPoseType            robotGetPoseFunc;
-    robotForwardKinematicType   robotForwardKinematicFunc;
-    robotInverseKinematicType   robotInverseKinematicFunc;
-    robotGetInputType           robotGetInputFunc;
-    robotSetOutputType          robotSetOutputFunc;
-    robotSetEOATActionType      robotSetEOATActionFunc;
+    ServiceLoginType            ServiceLoginFunc;
+    ServiceLogoutType           ServiceLogoutFunc;
+    RobotSetupType              RobotSetupFunc;
+    RobotShutdownType           RobotShutdownFunc;
+    RobotMoveToAnglesType       RobotMoveToAnglesFunc;
+    RobotMoveToPoseType         RobotMoveToPoseFunc;
+    RobotWaitForJointsType      RobotWaitForJointsFunc;
+    RobotMoveJType              RobotMoveJFunc;
+    RobotMoveLType              RobotMoveLFunc;
+    RobotMovePType              RobotMovePFunc;
+    RobotReleaseType            RobotReleaseFunc;
+    RobotHoldType               RobotHoldFunc;
+    RobotStopType               RobotStopFunc;
+    RobotRecoverType            RobotRecoverFunc;
+    RobotCalibrateType          RobotCalibrateFunc;
+    RobotResetType              RobotResetFunc;
+    RobotGetJointIdsType        RobotGetJointIdsFunc;
+    RobotGetAnglesType          RobotGetAnglesFunc;
+    RobotGetVelocityType        RobotGetVelocityFunc;
+    RobotGetCurrentType         RobotGetCurrentFunc;
+    RobotGetPoseType            RobotGetPoseFunc;
+    RobotForwardKinematicType   RobotForwardKinematicFunc;
+    RobotInverseKinematicType   RobotInverseKinematicFunc;
+    RobotGetInputType           RobotGetInputFunc;
+    RobotSetOutputType          RobotSetOutputFunc;
+    RobotSetEOATActionType      RobotSetEOATActionFunc;
 
 public:
     NeoServiceInterface(){}
@@ -71,164 +71,163 @@ public:
 
 bool NeoServiceInterface::load()
 {
-    libcb = dlopen(libname, RTLD_NOW);
-    if((libcb = dlopen(libname, RTLD_NOW)) == NULL)
+    if((NeoSI = dlopen(NeoSI_lib, RTLD_NOW)) == NULL)
     {
         return false;
     }
 
-    serviceLoginFunc = (serviceLoginType)dlsym(libcb, "serviceLogin");
-    if(serviceLoginFunc == NULL)
+    ServiceLoginFunc = (ServiceLoginType)dlsym(NeoSI, "SI_ServiceLogin");
+    if(ServiceLoginFunc == NULL)
     {
         return false;
     }
 
-    serviceLogoutFunc = (serviceLogoutType)dlsym(libcb, "serviceLogout");
-    if(serviceLogoutFunc == NULL)
+    ServiceLogoutFunc = (ServiceLogoutType)dlsym(NeoSI, "SI_ServiceLogout");
+    if(ServiceLogoutFunc == NULL)
     {
         return false;
     }
 
-    robotSetupFunc = (robotSetupType)dlsym(libcb, "robotSetup");
-    if(robotSetupFunc == NULL)
+    RobotSetupFunc = (RobotSetupType)dlsym(NeoSI, "SI_RobotSetup");
+    if(RobotSetupFunc == NULL)
     {
         return false;
     }
 
-    robotShutdownFunc = (robotShutdownType)dlsym(libcb, "robotShutdown");
-    if(robotShutdownFunc == NULL)
+    RobotShutdownFunc = (RobotShutdownType)dlsym(NeoSI, "SI_RobotShutdown");
+    if(RobotShutdownFunc == NULL)
     {
         return false;
     }
 
-    robotMoveToAnglesFunc = (robotMoveToAnglesType)dlsym(libcb, "robotMoveToAngles");
-    if(robotMoveToAnglesFunc == NULL)
+    RobotMoveToAnglesFunc = (RobotMoveToAnglesType)dlsym(NeoSI, "SI_RobotMoveToAngles");
+    if(RobotMoveToAnglesFunc == NULL)
     {
         return false;
     }
 
-    robotMoveToPoseFunc = (robotMoveToPoseType)dlsym(libcb, "robotMoveToPose");
-    if(robotMoveToPoseFunc == NULL)
+    RobotMoveToPoseFunc = (RobotMoveToPoseType)dlsym(NeoSI, "SI_RobotMoveToPose");
+    if(RobotMoveToPoseFunc == NULL)
     {
         return false;
     }
 
-    robotWaitForJointFunc = (robotWaitForJointType)dlsym(libcb, "robotWaitForJoint");
-    if(robotWaitForJointFunc == NULL)
+    RobotWaitForJointsFunc = (RobotWaitForJointsType)dlsym(NeoSI, "SI_RobotWaitForJoints");
+    if(RobotWaitForJointsFunc == NULL)
     {
         return false;
     }
 
-    robotMoveJFunc = (robotMoveJType)dlsym(libcb, "robotMoveJ");
-    if(robotMoveJFunc == NULL)
+    RobotMoveJFunc = (RobotMoveJType)dlsym(NeoSI, "SI_RobotMoveJ");
+    if(RobotMoveJFunc == NULL)
     {
         return false;
     }
 
-    robotMoveLFunc = (robotMoveLType)dlsym(libcb, "robotMoveL");
-    if(robotMoveLFunc == NULL)
+    RobotMoveLFunc = (RobotMoveLType)dlsym(NeoSI, "SI_RobotMoveL");
+    if(RobotMoveLFunc == NULL)
     {
         return false;
     }
 
-    robotMovePFunc = (robotMovePType)dlsym(libcb, "robotMoveP");
-    if(robotMovePFunc == NULL)
+    RobotMovePFunc = (RobotMovePType)dlsym(NeoSI, "SI_RobotMoveP");
+    if(RobotMovePFunc == NULL)
     {
         return false;
     }
 
-    robotReleaseFunc = (robotReleaseType)dlsym(libcb, "robotRelease");
-    if(robotReleaseFunc == NULL)
+    RobotReleaseFunc = (RobotReleaseType)dlsym(NeoSI, "SI_RobotRelease");
+    if(RobotReleaseFunc == NULL)
     {
         return false;
     }
 
-    robotHoldFunc = (robotHoldType)dlsym(libcb, "robotHold");
-    if(serviceLoginFunc == NULL)
+    RobotHoldFunc = (RobotHoldType)dlsym(NeoSI, "SI_RobotHold");
+    if(RobotHoldFunc == NULL)
     {
         return false;
     }
 
-    robotStopFunc = (robotStopType)dlsym(libcb, "robotStop");
-    if(serviceLoginFunc == NULL)
+    RobotStopFunc = (RobotStopType)dlsym(NeoSI, "SI_RobotStop");
+    if(RobotStopFunc == NULL)
     {
         return false;
     }
 
-    robotRecoverFunc = (robotRecoverType)dlsym(libcb, "robotRecover");
-    if(serviceLoginFunc == NULL)
+    RobotRecoverFunc = (RobotRecoverType)dlsym(NeoSI, "SI_RobotRecover");
+    if(RobotRecoverFunc == NULL)
     {
         return false;
     }
 
-    robotCalibrateFunc = (robotCalibrateType)dlsym(libcb, "robotCalibrate");
-    if(robotCalibrateFunc == NULL)
+    RobotCalibrateFunc = (RobotCalibrateType)dlsym(NeoSI, "SI_RobotCalibrate");
+    if(RobotCalibrateFunc == NULL)
     {
         return false;
     }
 
-    robotResetFunc = (robotResetType)dlsym(libcb, "robotReset");
-    if(robotResetFunc == NULL)
+    RobotResetFunc = (RobotResetType)dlsym(NeoSI, "SI_RobotReset");
+    if(RobotResetFunc == NULL)
     {
         return false;
     }
 
-    robotGetJointIdsFunc = (robotGetJointIdsType)dlsym(libcb, "robotGetJointIds");
-    if(robotGetJointIdsFunc == NULL)
+    RobotGetJointIdsFunc = (RobotGetJointIdsType)dlsym(NeoSI, "SI_RobotGetJointIds");
+    if(RobotGetJointIdsFunc == NULL)
     {
         return false;
     }
 
-    robotGetAnglesFunc = (robotGetAnglesType)dlsym(libcb, "robotGetAngles");
-    if(robotGetAnglesFunc == NULL)
+    RobotGetAnglesFunc = (RobotGetAnglesType)dlsym(NeoSI, "SI_RobotGetAngles");
+    if(RobotGetAnglesFunc == NULL)
     {
         return false;
     }
 
-    robotGetVelocityFunc = (robotGetVelocityType)dlsym(libcb, "robotGetVelocity");
-    if(robotGetVelocityFunc == NULL)
+    RobotGetVelocityFunc = (RobotGetVelocityType)dlsym(NeoSI, "SI_RobotGetVelocity");
+    if(RobotGetVelocityFunc == NULL)
     {
         return false;
     }
 
-    robotGetCurrentFunc = (robotGetCurrentType)dlsym(libcb, "robotGetCurrent");
-    if(robotGetCurrentFunc == NULL)
+    RobotGetCurrentFunc = (RobotGetCurrentType)dlsym(NeoSI, "SI_RobotGetCurrent");
+    if(RobotGetCurrentFunc == NULL)
     {
         return false;
     }
 
-    robotGetPoseFunc = (robotGetPoseType)dlsym(libcb, "robotGetPose");
-    if(robotGetPoseFunc == NULL)
+    RobotGetPoseFunc = (RobotGetPoseType)dlsym(NeoSI, "SI_RobotGetPose");
+    if(RobotGetPoseFunc == NULL)
     {
         return false;
     }
 
-    robotForwardKinematicFunc = (robotForwardKinematicType)dlsym(libcb, "robotForwardKinematic");
-    if(robotForwardKinematicFunc == NULL)
+    RobotForwardKinematicFunc = (RobotForwardKinematicType)dlsym(NeoSI, "SI_RobotForwardKinematic");
+    if(RobotForwardKinematicFunc == NULL)
     {
         return false;
     }
 
-    robotInverseKinematicFunc = (robotInverseKinematicType)dlsym(libcb, "robotInverseKinematic");
-    if(robotInverseKinematicFunc == NULL)
+    RobotInverseKinematicFunc = (RobotInverseKinematicType)dlsym(NeoSI, "SI_RobotInverseKinematic");
+    if(RobotInverseKinematicFunc == NULL)
     {
         return false;
     }
 
-    robotGetInputFunc = (robotGetInputType)dlsym(libcb, "robotGetInput");
-    if(robotGetInputFunc == NULL)
+    RobotGetInputFunc = (RobotGetInputType)dlsym(NeoSI, "SI_RobotGetInput");
+    if(RobotGetInputFunc == NULL)
     {
         return false;
     }
 
-    robotSetOutputFunc = (robotSetOutputType)dlsym(libcb, "robotSetOutput");
-    if(robotSetOutputFunc == NULL)
+    RobotSetOutputFunc = (RobotSetOutputType)dlsym(NeoSI, "SI_RobotSetOutput");
+    if(RobotSetOutputFunc == NULL)
     {
         return false;
     }
 
-    robotSetEOATActionFunc = (robotSetEOATActionType)dlsym(libcb, "robotSetEOATAction");
-    if(robotSetEOATActionFunc == NULL)
+    RobotSetEOATActionFunc = (RobotSetEOATActionType)dlsym(NeoSI, "SI_RobotSetEOATAction");
+    if(RobotSetEOATActionFunc == NULL)
     {
         return false;
     }
@@ -238,9 +237,9 @@ bool NeoServiceInterface::load()
 
 void NeoServiceInterface::unload()
 {
-    if(libcb != NULL)
+    if(NeoSI != NULL)
     {
-       dlclose(libcb);
+       dlclose(NeoSI);
     }
 }
 

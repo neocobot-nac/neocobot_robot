@@ -1,4 +1,6 @@
 #include "NeoDriver.h"
+#include "NeoDriver.cpp"
+
 #include <string>
 
 int main(int argc, char **argv) 

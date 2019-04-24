@@ -8,34 +8,33 @@ NeoDriver::NeoDriver(const char* ip, short int port, const char* name, bool simu
         ROS_ERROR("Load NeoServiceInterface library failed !!!");
         exit(1);
     }
-    NEOCStatus login_status = NeoSI.NeoServiceLoginFunc(ip, port)
+    NEOCStatus login_status = NeoSI.ServiceLoginFunc(ip, port);
     if(login_status != NEOCLIENT_OK)
     {
         ROS_ERROR("Connect robot server %s:%d failed !!!", ip, port);
         exit(1);
     }
-
     ROS_INFO("Connect robot server %s:%d success!",ip, port);
-    SetupParam parameters;
-    SetupMode mode;
+
+    unsigned int mode;
     if (simulator)
     {
-        mode = SetupMode_VirtualMode;
+        mode = OFFLINE;
     }
     else
     {
-        mode = SetupMode_RealMode;
+        mode = ONLINE;
     }
 
-    NEOCStatus setup_status = NeoSI.RobotSetupFunc(name.c_str(), parameters, mode);
+    NEOCStatus setup_status = NeoSI.RobotSetupFunc(name, mode);
     if (setup_status != NEOCLIENT_OK)
     {
         ROS_ERROR("Robot setup failed !!!");
         exit(1);
     }
 
-    ROS_INFO("Robot setup failed !!!");
-    NEOCStatus param_status == NeoSI.robotGetJointIdsFunc(ids_size, motor_ids);
+    ROS_INFO("Robot setup succeed");
+    NEOCStatus param_status = NeoSI.RobotGetJointIdsFunc(&ids_size, &joint_ids);
     if (param_status != NEOCLIENT_OK)
     {
         ROS_ERROR("Param setup failed !!!");
@@ -46,5 +45,5 @@ NeoDriver::NeoDriver(const char* ip, short int port, const char* name, bool simu
 
 NeoDriver::~NeoDriver()
 {
-    NeoSI.NeoServiceLogoutFunc();
+    NeoSI.ServiceLogoutFunc();
 }

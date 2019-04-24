@@ -13,7 +13,6 @@
 #define _NEOCLIENT_END }
 #endif
 
-
 #define NEOCStatus unsigned long
 
 #define NEOCLIENT_OK				0x00000000U // everything is ok(0)
@@ -43,85 +42,57 @@
 #define NEOCLIENT_TERMINATOR		0x01000000U // for special use instead of errorcode(16777216)
 #define NEOCLIENT_ERROR_UNKNOWN		0x10000000U // unknown error(268435456)
 
-/*
-@brief 配置连接信息（暂时不提供更改）
-*/
-typedef struct Setup_Param
+/* Robot setup mode. */
+#define OFFLINE 0
+#define ONLINE  1
+
+/* Max motors supported */
+#define MAX_MOTORS 10
+
+/* Robot motion mode */
+enum MotionMode :unsigned int
 {
-	const char* channel_name = "/dev/pcanusb32";
-	const char* channel_type = "PEAK_SYS_PCAN_USB";
-	const char* protocol = "TMLCAN";
-	int host_id = 10;
-	int baud_rate = 500000;
+	ABSOLUTE_MODE = 10,
+	RELATIVE_MODE,
+};
 
-}SetupParam;
-
-/*
-@brief 机械臂配置模式
-SetupMode_RealMode表示真实连接
-SetupMode_VirtualMode表示虚拟连接
-*/
-typedef enum Setup_Mode
+/*  Robot trajectory motion mode */
+enum TrajMotionMode :unsigned int
 {
-	SetupMode_RealMode		= 0,
-	SetupMode_VirtualMode	= 1
+	CLOSED_MODE = 20,
+	OPEN_MODE,
+};
 
-}SetupMode;
-
-/*
-@brief 机械臂运动模式
-RelativeMode_Absolute表示绝对位置运动
-RelativeMode_Relative表示相对位置运动
-*/
-typedef enum Relative_Mode
-{
-	RelativeMode_Absolute = 0,
-	RelativeMode_Relative = 1
-
-}RelativeMode;
-
-/*
-@brief 机械臂路径闭环模式
-TrajCloseMode_Closed表示路径闭环
-TrajCloseMode_Open表示路径开环
-*/
-typedef enum Traj_Close_Mode
-{
-	TrajCloseMode_Closed	= 0,
-	TrajCloseMode_Open		= 1
-
-}TrajCloseMode;
-
-/*
-@brief 机械臂末端位置定义
-*/
+/* End position of robot */
 typedef struct _Position
 {
 	double x;
 	double y;
 	double z;
 
-}Position;
+	_Position(double _x, double _y, double _z) :x(_x), y(_y), z(_z) {};
+	_Position() {};
+}Position, *PPosition;
 
-/*
-@brief 机械臂末端姿态定义
-*/
+/* End orientation of robot */
 typedef struct _Orientation
 {
 	double Rx;
 	double Ry;
 	double Rz;
 
-}Orientation;
+	_Orientation(double _Rx, double _Ry, double _Rz) :Rx(_Rx), Ry(_Ry), Rz(_Rz) {};
+	_Orientation() {};
+}Orientation, *POrientation;
 
-/*
-@brief 机械臂末端位姿定义
-*/
+/* End Pose of robot */
 typedef struct _Pose
 {
 	Position position;
 	Orientation orientation;
 
-}Pose;
+	_Pose(Position _position, Orientation _orientation) :position(_position), orientation(_orientation) {};
+	_Pose() {};
+}Pose, *PPose;
 
 #endif

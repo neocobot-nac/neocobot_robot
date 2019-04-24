@@ -5,9 +5,7 @@
   <arg name="port" doc="IP of robot controller" />
   <arg name="robot_name" doc="name of robot" />
   <arg name="simulator" doc="connect robot with simulator"/>
-
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
-
+  
   <!-- driver -->
   <node name="neo_driver" pkg="neo_driver" type="neo_driver" args="$(arg robot_ip) $(arg port) $(arg robot_name) $(arg simulator)" output="screen"/>
   

@@ -7,7 +7,7 @@
   <arg name="simulator" default="false" doc="connect robot with simulator" />
 
   <!-- robot model -->
-  <include file="$(find neo_description)/launch/omni_6_launch/omni_6_upload.launch"/>
+  <include file="$(find neo_description)/launch/omni_6_rviz_upload.launch"/>
 
   <!-- robot dirver -->
   <include file="$(find neo_bringup)/launch/neo_driver_bringup.launch">

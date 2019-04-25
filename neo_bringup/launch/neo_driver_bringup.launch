@@ -2,12 +2,16 @@
 
 <launch>
   <arg name="robot_ip" doc="IP of robot controller" />
-  <arg name="port" doc="IP of robot controller" />
   <arg name="robot_name" doc="name of robot" />
-  <arg name="simulator" doc="connect robot with simulator"/>
+  <arg name="sim" doc="connect robot with simulator"/>
   
+
   <!-- driver -->
-  <node name="neo_driver" pkg="neo_driver" type="neo_driver" args="$(arg robot_ip) $(arg port) $(arg robot_name) $(arg simulator)" output="screen"/>
+  <node name="neo_driver" pkg="neo_driver" type="neo_driver" output="screen">
+    <param name="robot_ip" type="str" value="$(arg robot_ip)"/>
+    <param name="robot_name" type="str" value="$(arg robot_name)"/>
+    <param name="sim" type="str" value="$(arg sim)"/>
+  </node>
   
   <!-- TF Buffer Server -->
   <node pkg="tf2_ros" type="buffer_server" name="tf2_buffer_server">

@@ -2,9 +2,8 @@
 
 <launch>
   <arg name="robot_ip" doc="IP of robot controller" />
-  <arg name="port" default="8301" doc="Port of robot controller" />
   <arg name="robot_name" default="NX63P1" doc="name of robot" />
-  <arg name="simulator" default="false" doc="connect robot with simulator" />
+  <arg name="sim" default="false" doc="connect robot with simulator" />
 
   <!-- robot model -->
   <include file="$(find neo_description)/launch/omni_6_rviz_upload.launch"/>
@@ -12,8 +11,7 @@
   <!-- robot dirver -->
   <include file="$(find neo_bringup)/launch/neo_driver_bringup.launch">
     <arg name="robot_ip" value="$(arg robot_ip)" />
-    <arg name="port" value="$(arg port)" />
     <arg name="robot_name" value="$(arg robot_name)" />
-    <arg name="simulator" value="$(arg simulator)" />
+    <arg name="sim" value="$(arg sim)" />
   </include>
 </launch>

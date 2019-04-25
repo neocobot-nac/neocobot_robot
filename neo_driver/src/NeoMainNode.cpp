@@ -1,77 +1,115 @@
 #include "NeoDriver.h"
 #include "NeoDriver.cpp"
 
+#include <signal.h>
 #include <string>
+
+using std::string;
+using std::boolalpha;
+using std::istringstream;
+
+bool get_param(const char* name, string* value)
+{
+    string param_name = "~";
+    param_name = param_name + name;
+
+    if (ros::param::has(param_name.c_str()))
+    {
+        ros::param::get(param_name.c_str(), *value);
+    }
+    else if (ros::param::has(name))
+    {
+        ros::param::get(name, *value);
+    }
+    else
+    {
+        *value = "";
+        return false;
+    }
+    return true;
+}
+
+void NeoSigintHandler(int sig)
+{
+	ROS_INFO("Neo driver shutdown!");
+	ros::shutdown();
+}
 
 int main(int argc, char **argv) 
 {
-    std::string ip;
-    int port = 8301;
-    std::string name;
-    bool simulator;
-
     ros::init(argc, argv, "neo_driver");
-    if (!(ros::param::get("~robot_ip", ip))) 
+
+    string s_ip = "127.0.0.1";
+    string s_name = "NX63P1";
+    string s_sim = "true";
+
+    const char* ip;
+    const char* name;
+    bool sim;
+
+    /* get robot_ip parameter */
+    if (!(get_param("robot_ip", &s_ip)))
     {
         if (argc > 1)
         {
-            ip = argv[1];
+            s_ip = argv[1];
         }
         else
         {
-            ROS_WARN("Could not get robot_ip. Please supply it as command line parameter or on the parameter server as robot_ip");
-            exit(1);
+            ROS_WARN("Could not get robot_ip parameter. Using default value of 127.0.0.1.");
+            s_ip = "127.0.0.1";
         }
     }
-	if (!(ros::param::get("~port", port))) 
+    ip = s_ip.c_str();
+
+    /* get robot_name parameter */
+    if (!(get_param("robot_name", &s_name))) 
     {
 		if (argc > 2) 
         {
-			port = atoi(argv[2]);
-		}
-		if((port <= 0) or (port >= 65535)) 
-        {
-            ROS_WARN("Reverse port value is not valid (Use number between 1 and 65534. Using default value of 8887");
-            port = 8301;
-		}
-	}
-    if (!(ros::param::get("~robot_name", name))) 
-    {
-		if (argc > 3) 
-        {
-			name = argv[3];
+			s_name = argv[2];
 		}
         else
 		{
-            ROS_WARN("Could not get robot_name. Please supply it as command line parameter or on the parameter server as robot_name");
-			exit(1);
+            ROS_WARN("Could not get robot_name parameter. Using default value of NX63P1.");
+            s_name = "NX63P1";
 		}
 	}
-    if (!(ros::param::get("~simulator", simulator))) 
+    name = s_name.c_str();
+
+    /* get sim parameter */
+    if (!(get_param("sim", &s_sim))) 
     {
-		if (argc > 4) 
+		if (argc > 3)
         {
-			if(strcmp(argv[4], "true") == 0)
-            {
-                simulator = true;
-            }
-            else
-            {
-                simulator = false;
-            }
+			s_sim = argv[3];
 		}
         else
 		{
-            ROS_WARN("Could not get simulator. Please supply it as command line parameter or on the parameter server as simulator");
-			exit(1);
+            ROS_WARN("Could not get sim parameter. Using default value of false.");
+            s_sim = "false";
 		}
     }
+    istringstream(s_sim)>>boolalpha>>sim;
+    ROS_INFO("Get parameters succeed.");
 
-    NeoDriver neo_driver(ip.c_str(), port, name.c_str(), simulator);
-
-    ros::AsyncSpinner spinner(6);
-    spinner.start();
-    ros::waitForShutdown();
-    ROS_WARN("neo_dirver shutdown");
+    /* neo_driver */
+    NeoDriver neo_driver;
+    if (!neo_driver.Connect(ip, 8301, name, sim))
+    {
+        ROS_ERROR("Connect Robot failed !!!");
+        neo_driver.Disconnect();
+        ROS_WARN("Neo driver shutdown.");
+    }
+    
+    signal(SIGINT, NeoSigintHandler);
+    ros::Rate loop_rate(1);
+	while(ros::ok())
+    {
+		loop_rate.sleep();
+		//ROS_INFO("ROS is ok!");
+		ros::spinOnce();
+	}
+    neo_driver.Disconnect();
     return(0);
 }

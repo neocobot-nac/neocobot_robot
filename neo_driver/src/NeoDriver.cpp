@@ -1,23 +1,25 @@
 #include "NeoDriver.h"
 
-NeoDriver::NeoDriver(const char* ip, short int port, const char* name, bool simulator)
+bool NeoDriver::Connect(const char* ip, short int port, const char* name, bool sim)
 {
     bool ret = NeoSI.load();
     if (!ret)
     {
         ROS_ERROR("Load NeoServiceInterface library failed !!!");
-        exit(1);
+        return false;
     }
+    ROS_INFO("Load NeoServiceInterface library success!");
+
     NEOCStatus login_status = NeoSI.ServiceLoginFunc(ip, port);
     if(login_status != NEOCLIENT_OK)
     {
         ROS_ERROR("Connect robot server %s:%d failed !!!", ip, port);
-        exit(1);
+        return false;
     }
     ROS_INFO("Connect robot server %s:%d success!",ip, port);
 
     unsigned int mode;
-    if (simulator)
+    if (sim)
     {
         mode = OFFLINE;
     }
@@ -30,7 +32,7 @@ NeoDriver::NeoDriver(const char* ip, short int port, const char* name, bool simu
     if (setup_status != NEOCLIENT_OK)
     {
         ROS_ERROR("Robot setup failed !!!");
-        exit(1);
+        return false;
     }
 
     ROS_INFO("Robot setup succeed");
@@ -38,12 +40,18 @@ NeoDriver::NeoDriver(const char* ip, short int port, const char* name, bool simu
     if (param_status != NEOCLIENT_OK)
     {
         ROS_ERROR("Param setup failed !!!");
-        exit(1);
+        return false;
     }
     ROS_INFO("Param setup succeed");
+
+    ROS_INFO("111");
+
+    return true;
 }
 
-NeoDriver::~NeoDriver()
+bool NeoDriver::Disconnect()
 {
     NeoSI.ServiceLogoutFunc();
+    return true;
 }
+

@@ -1,5 +1,4 @@
 #include "NeoDriver.h"
-#include "NeoDriver.cpp"
 
 #include <signal.h>
 #include <string>
@@ -95,20 +94,22 @@ int main(int argc, char **argv)
 
     /* neo_driver */
     NeoDriver neo_driver;
+    neo_driver.SetupROSFunction();
+
     if (!neo_driver.Connect(ip, 8301, name, sim))
     {
         ROS_ERROR("Connect Robot failed !!!");
         neo_driver.Disconnect();
-        ROS_WARN("Neo driver shutdown.");
     }
-    
+
     signal(SIGINT, NeoSigintHandler);
-    ros::Rate loop_rate(1);
+
+    ros::Rate loop_rate(10);
 	while(ros::ok())
     {
+        neo_driver.UpdateData();
+        ros::spinOnce();
 		loop_rate.sleep();
-		//ROS_INFO("ROS is ok!");
-		ros::spinOnce();
 	}
     neo_driver.Disconnect();
     return(0);

@@ -10,11 +10,15 @@ add_compile_options(-std=c++11)
 find_package(catkin REQUIRED COMPONENTS 
   roscpp
   std_msgs
+  sensor_msgs
+  control_msgs
+  industrial_msgs
+  trajectory_msgs
 )
 
 catkin_package(
   INCLUDE_DIRS include
-  CATKIN_DEPENDS roscpp std_msgs
+  CATKIN_DEPENDS roscpp std_msgs sensor_msgs control_msgs industrial_msgs trajectory_msgs
 )
 
 include_directories(include ${catkin_INCLUDE_DIRS})
@@ -26,7 +30,7 @@ else()
 endif()
 
 ## Declare a C++ executable
-set(${PROJECT_NAME}_SOURCES src/NeoMainNode.cpp)
+set(${PROJECT_NAME}_SOURCES src/NeoMainNode.cpp src/NeoDriver.cpp)
 add_executable(neo_driver ${${PROJECT_NAME}_SOURCES})
 target_link_libraries(neo_driver ${catkin_LIBRARIES} pthread dl)
 #add_dependencies(neo_driver beginner_tutorials_gencpp)

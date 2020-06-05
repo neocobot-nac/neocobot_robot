@@ -1,8 +1,10 @@
 <?xml version="1.0"?>
 <package>
   <name>neocobot_robot</name>
-  <version>0.2.0</version>
-  <description>Metapackage for neocobot_robot</description>
+  <version>1.0.0</version>
+  <description>
+    ROS package for Neocobot Robots
+  </description>
   <author>Huang Shaojie</author>
   <author email="shaojie@neocobot.com">Huang Shaojie</author>
   <maintainer email="shaojie@neocobot.com">Huang Shaojie</maintainer>

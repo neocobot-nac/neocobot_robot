@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Load description -->
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find neo_description)/urdf/omni6_lite/omni6_lite_robot.urdf.xacro'"/> 
+
+  <!-- Joint state publisher -->
+  <node name="joint_state_publisher_gui" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" >
+    <param name="use_gui" value="true" />
+  </node>
+
+  <!-- Combine joint values -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"/>
+
+  <!-- rviz -->
+  <node name="omni6_lite_rviz" pkg="rviz" type="rviz" args="-d $(find neo_description)/rviz/omni6_lite/omni6_lite.rviz" />
+</launch>

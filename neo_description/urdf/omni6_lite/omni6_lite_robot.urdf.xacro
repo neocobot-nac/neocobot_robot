@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="omni6_lite" >
+
+  <!-- common stuff -->
+  <xacro:include filename="$(find neo_description)/urdf/common.gazebo.xacro" />
+
+  <!-- omni6_lite -->
+  <xacro:include filename="$(find neo_description)/urdf/omni6_lite/omni6_lite.urdf.xacro" />
+
+  <!-- arm -->
+  <xacro:omni6_lite_robot />
+
+  <link name="world" />
+
+  <joint name="world_joint" type="fixed" >
+    <parent link="world" />
+    <child link="base_link" />
+    <origin xyz="0 0 0" rpy="0 0 0" />
+  </joint>
+
+</robot>

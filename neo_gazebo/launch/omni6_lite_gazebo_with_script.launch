@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="paused" default="false" doc="Start gazebo in paused mode" />
+  <arg name="gui" default="true" doc="Start gazebo with gui" />
+
+  <!-- Create an empty simulated world in gazebo -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch" >
+    <arg name="world_name" default="worlds/empty.world"/>  
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="gui" value="$(arg gui)"/>
+  </include>
+
+  <!-- Load description -->
+  <include file="$(find neo_description)/launch/omni6_lite_upload.launch" />
+
+  <!-- Combine joint values -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+        respawn="false" output="screen" >
+    <param name="publish_frequency" type="double" value="50.0" />
+    <param name="tf_prefix" type="string" value="" /> <!-- Supported multiple robots -->
+  </node>
+
+  <!-- push robot_description to factory and spawn robot in gazebo -->
+  <node name="gazebo_model_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-urdf -param robot_description -model robot" />
+
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <include file="$(find neo_gazebo)/launch/controller_utils.launch"/>
+
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find neo_gazebo)/controller/arm_controller_omni6_lite.yaml" command="load"/>
+
+  <node name="arm_controller_manager" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="load arm_controller" />
+  <node name="joint_group_position_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn joint_group_position_controller" />
+
+  <node name="joint_controllers" pkg="neo_gazebo" type="joint_controllers.py" output="screen" >
+    <param name="use_gui" value="true" />
+  </node>
+</launch>

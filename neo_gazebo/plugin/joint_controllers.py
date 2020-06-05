@@ -21,7 +21,7 @@ from python_qt_binding.QtWidgets import QWidget
 
 import xml.dom.minidom
 from sensor_msgs.msg import JointState
-from std_msgs.msg import Float64
+from std_msgs.msg import Float64, Float64MultiArray
 from math import pi
 from threading import Thread
 import sys
@@ -68,10 +68,9 @@ class JointControllers():
         for source in source_list:
             self.sources.append(rospy.Subscriber(source, JointState, self.source_cb))
 
-        self.joint_pub = {}
-        for name in self.joint_name_list:
-            node_name = "/" + name + "_controller/command"
-            self.joint_pub[name] = rospy.Publisher(node_name, Float64, queue_size=5)
+        self.joint_pub = None
+        node_name = "/joint_group_position_controller/command"
+        self.joint_pub = rospy.Publisher(node_name, Float64MultiArray, queue_size=5)
 
     def init_urdf(self, robot):
         """
@@ -172,13 +171,17 @@ class JointControllers():
 
         # Publish
         while not rospy.is_shutdown():
+            joints = []
+            joints_msg = Float64MultiArray()
             for name in self.joint_name_list:
-                msg = Float64()
                 joint = self.joint_list[name]
-                msg.data = joint['position']
+                joints.append(joint['position'])
 
-                # Only publish non-empty messages
-                self.joint_pub[name].publish(msg)
+            # Only publish non-empty messages
+            if joints:
+                joints_msg.data = joints
+                rospy.loginfo("data: %s" %str(joints))
+                self.joint_pub.publish(joints_msg)
 
             try:
                 r.sleep()

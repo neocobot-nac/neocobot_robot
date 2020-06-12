@@ -180,7 +180,6 @@ class JointControllers():
             # Only publish non-empty messages
             if joints:
                 joints_msg.data = joints
-                rospy.loginfo("data: %s" %str(joints))
                 self.joint_pub.publish(joints_msg)
 
             try:

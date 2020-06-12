@@ -1,0 +1,7 @@
+Pose pose
+float32 velocity
+float32 acceleration
+uint32 mode
+bool block
+---
+int64 status

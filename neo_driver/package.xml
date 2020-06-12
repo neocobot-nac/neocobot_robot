@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<package>
+  <name>neo_driver</name>
+  <version>1.0.0</version>
+  <description> The neo_driver package. </description>
+
+  <maintainer email="shaojie@neocobot.com">Huang Shaojie</maintainer>
+
+  <license>BSD</license>
+
+  <url type="website">http://github.com/neocobot-nac/NeoROS.git</url>
+
+  <author>Huang Shaojie</author>
+  <author email="shaojie@neocobot.com">Huang Shaojie</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>control_msgs</build_depend>
+  <build_depend>industrial_msgs</build_depend>
+  <build_depend>trajectory_msgs</build_depend>
+  <build_depend>neo_msgs</build_depend>
+  
+  <run_depend>roscpp</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+  <run_depend>control_msgs</run_depend>
+  <run_depend>industrial_msgs</run_depend>
+  <run_depend>trajectory_msgs</run_depend>
+  <run_depend>neo_msgs</run_depend>
+</package>

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:macro name="gazebo_block" params="link_name">
+    <gazebo reference="${link_name}">
+      <selfCollide>true</selfCollide>
+    </gazebo>
+  </xacro:macro>
+
+  <xacro:macro name="NX63A1_gazebo">
+    <xacro:gazebo_block link_name="first_link" />
+    <xacro:gazebo_block link_name="second_link" />
+    <xacro:gazebo_block link_name="third_link" />
+    <xacro:gazebo_block link_name="fourth_link" />
+    <xacro:gazebo_block link_name="fifth_link" />
+    <xacro:gazebo_block link_name="sixth_link" />
+    <xacro:gazebo_block link_name="ee_flange_link" />
+  </xacro:macro>
+
+</robot>

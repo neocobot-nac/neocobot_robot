@@ -5,9 +5,9 @@
 
 #include <sensor_msgs/JointState.h>
 
-#include <control_msgs/FollowJointTrajectoryAction.h>
-
 #include <industrial_msgs/RobotStatus.h>
+
+#include <control_msgs/FollowJointTrajectoryAction.h>
 
 #include <trajectory_msgs/JointTrajectory.h>
 #include <trajectory_msgs/JointTrajectoryPoint.h>

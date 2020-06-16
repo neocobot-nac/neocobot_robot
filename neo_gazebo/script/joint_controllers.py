@@ -68,7 +68,6 @@ class JointControllers():
         for source in source_list:
             self.sources.append(rospy.Subscriber(source, JointState, self.source_cb))
 
-        self.joint_pub = None
         node_name = "/joint_group_position_controller/command"
         self.joint_pub = rospy.Publisher(node_name, Float64MultiArray, queue_size=5)
 

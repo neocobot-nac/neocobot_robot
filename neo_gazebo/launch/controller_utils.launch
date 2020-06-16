@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <launch>
   <!-- Combine joint values -->
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
-        respawn="false" output="screen" >
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen" >
     <param name="publish_frequency" type="double" value="50.0" />
     <param name="tf_prefix" type="string" value="" /> <!-- Supported multiple robots -->
   </node>

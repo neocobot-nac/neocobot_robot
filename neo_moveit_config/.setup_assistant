@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: neo_description
+    relative_path: 
+    xacro_args: "--inorder "
+  SRDF:
+    relative_path: 
+  CONFIG:
+    author_name: Nac
+    author_email: shaojie@neocobot.com
+    generated_timestamp: 1591842744

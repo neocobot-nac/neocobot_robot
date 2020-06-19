@@ -19,14 +19,35 @@
   <build_depend>sensor_msgs</build_depend>
   <build_depend>control_msgs</build_depend>
   <build_depend>industrial_msgs</build_depend>
+  <build_depend>industrial_utils</build_depend>
   <build_depend>trajectory_msgs</build_depend>
+  <build_depend>simple_msgs</build_depend>
+  <build_depend>actionlib_msgs</build_depend>
   <build_depend>neo_msgs</build_depend>
-  
+  <build_depend>urdf</build_depend>
+  <build_depend>actionlib</build_depend>
+  <build_depend>pluginlib</build_depend>
+  <build_depend>moveit_core</build_depend>
+  <build_depend>moveit_ros_planning_interface</build_depend>
+  <build_depend>moveit_ros_perception</build_depend>
+  <build_depend>interactive_markers</build_depend>
+  <build_depend>geometric_shapes</build_depend>
+
   <run_depend>roscpp</run_depend>
   <run_depend>std_msgs</run_depend>
   <run_depend>sensor_msgs</run_depend>
   <run_depend>control_msgs</run_depend>
   <run_depend>industrial_msgs</run_depend>
+  <run_depend>industrial_utils</run_depend>
   <run_depend>trajectory_msgs</run_depend>
+  <run_depend>simple_msgs</run_depend>
+  <run_depend>actionlib_msgs</run_depend>
   <run_depend>neo_msgs</run_depend>
+  <run_depend>urdf</run_depend>
+  <run_depend>actionlib</run_depend>
+  <run_depend>pluginlib</run_depend>
+  <run_depend>moveit_core</run_depend>
+  <run_depend>moveit_ros_planning_interface</run_depend>
+  <run_depend>moveit_ros_perception</run_depend>
+  <run_depend>interactive_markers</run_depend>
 </package>

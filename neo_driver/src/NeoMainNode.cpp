@@ -46,14 +46,6 @@ int main(int argc, char **argv)
     string s_name = "NX63A1";
     string s_mode = "0";
 
-    const char* ip;
-    short int port;
-    const char* serial;
-    unsigned int timeout;
-    int transport;
-    const char* name;
-    unsigned int mode;
-
     /* get robot_ip parameter */
     if (!(get_param("robot_ip", &s_ip)))
     {
@@ -67,7 +59,6 @@ int main(int argc, char **argv)
             s_ip = "127.0.0.1";
         }
     }
-    ip = s_ip.c_str();
 
     /* get robot_port parameter */
     if (!(get_param("robot_port", &s_port)))
@@ -82,7 +73,6 @@ int main(int argc, char **argv)
             s_port = "8301";
         }
     }
-    port = stoi(s_port);
 
     /* get robot_serial parameter */
     if (!(get_param("robot_serial", &s_serial)))
@@ -97,7 +87,6 @@ int main(int argc, char **argv)
             s_serial = "000027104E20";
         }
     }
-    serial = s_serial.c_str();
 
     /* get robot_timeout parameter */
     if (!(get_param("robot_timeout", &s_timeout)))
@@ -112,7 +101,6 @@ int main(int argc, char **argv)
             s_timeout = "3";
         }
     }
-    timeout = stoi(s_timeout);
 
     /* get robot_transport parameter */
     if (!(get_param("robot_transport", &s_transport)))
@@ -124,10 +112,9 @@ int main(int argc, char **argv)
         else
         {
             ROS_WARN("Could not get robot_transport parameter. Using default value.");
-            s_transport = "0";
+            s_transport = "1";
         }
     }
-    transport = stoi(s_transport);
 
     /* get robot_name parameter */
     if (!(get_param("robot_name", &s_name))) 
@@ -142,7 +129,6 @@ int main(int argc, char **argv)
             s_name = "NX63A1";
 		    }
 	  }
-    name = s_name.c_str();
 
     /* get robot_mode parameter */
     if (!(get_param("robot_mode", &s_mode))) 
@@ -157,12 +143,11 @@ int main(int argc, char **argv)
             s_mode = "0";
 		    }
 	  }
-    mode = stoi(s_mode);
 
     /* neo_driver */
-    NeoDriver neo_driver;
-
-    if (!neo_driver.Connect(ip, port, serial, timeout, transport, name, mode))
+    string action_name = s_name + "/follow_joint_trajectory";
+    NeoDriver neo_driver(action_name);
+    if (!neo_driver.Connect(s_ip, s_port, s_serial, s_timeout, s_transport, s_name, s_mode))
     {
         ROS_ERROR("Connect Robot failed !!!");
         neo_driver.Disconnect();

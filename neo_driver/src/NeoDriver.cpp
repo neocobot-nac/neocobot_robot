@@ -1,19 +1,40 @@
 #include "NeoDriver.h"
+NeoDriver::NeoDriver(std::string action_name) : 
+    follow_joint_trajectory_action_server(_handle, action_name, boost::bind(&NeoDriver::actionGoal, this, _1), boost::bind(&NeoDriver::actionCancel, this, _1), false)
+{
+    
+}
+
+NeoDriver::~NeoDriver()
+{
+    
+}
 
 void NeoDriver::SetupROS()
 {
-    JointStatePublisher = _handle.advertise<sensor_msgs::JointState>("joint_states", 10);
-    RobotStatusPublisher = _handle.advertise<industrial_msgs::RobotStatus>("robot_status", 10);
+    joint_state_publisher = _handle.advertise<sensor_msgs::JointState>("joint_states", 10);
+    robot_status_publisher = _handle.advertise<industrial_msgs::RobotStatus>("robot_status", 10);
+    joint_path_command_publisher = _handle.advertise<trajectory_msgs::JointTrajectory>("joint_path_command", 100);
 
-    MoveJointsServer = _handle.advertiseService("/neo_driver/move_joints", &NeoDriver::executeMoveJoints, this);
-    MoveEndposServer = _handle.advertiseService("/neo_driver/move_endpos", &NeoDriver::executeMoveEndpos, this);
+    move_joints_server = _handle.advertiseService("/neo_driver/move_joints", &NeoDriver::executeMoveJoints, this);
+    move_endpos_server = _handle.advertiseService("/neo_driver/move_endpos", &NeoDriver::executeMoveEndpos, this);
 
-    publish_timer = _handle.createTimer(ros::Duration(0.1), &NeoDriver::UpdateData, this);
-    publish_timer.start();
+    update_timer = _handle.createTimer(ros::Duration(0.1), &NeoDriver::UpdateData, this);
+    update_timer.start();
+
+    follow_joint_trajectory_action_server.start();
 }
 
-bool NeoDriver::Connect(const char* ip, short int port, const char* serial, unsigned int timeout, int transport, const char* name, unsigned int mode)
+bool NeoDriver::Connect(string ip, string port, string serial, string timeout, string transport, string name, string mode)
 {
+    string s_ip = ip;
+    string s_port = port;
+    string s_serial = serial;
+    string s_timeout = timeout;
+    string s_transport = transport;
+    string s_name = name;
+    string s_mode = mode;
+
     bool ret = interfaces.load();
     if (!ret)
     {
@@ -22,14 +43,14 @@ bool NeoDriver::Connect(const char* ip, short int port, const char* serial, unsi
     }
     ROS_INFO("Load NeoService interfaces success!");
 
-    if(interfaces.ServiceLogin(ip, port, serial, timeout, transport) != NEOCOBOT_OK)
+    if(interfaces.ServiceLogin(s_ip.c_str(), stoi(s_port), s_serial.c_str(), stoi(s_timeout), stoi(s_transport)) != NEOCOBOT_OK)
     {
-        ROS_ERROR("Connect robot server %s:%d failed !!!", ip, port);
+        ROS_ERROR("Connect robot server %s:%s failed !!!", s_ip.c_str(), s_port.c_str());
         return false;
     }
-    ROS_INFO("Connect robot server %s:%d success!",ip, port);
+    ROS_INFO("Connect robot server %s:%s success!",s_ip.c_str(), s_port.c_str());
 
-    if (interfaces.RobotSetup(name, mode) != NEOCOBOT_OK)
+    if (interfaces.RobotSetup(s_name.c_str(), stoi(s_mode)) != NEOCOBOT_OK)
     {
         ROS_ERROR("Robot setup failed !!!");
         interfaces.ServiceLogout();
@@ -73,6 +94,7 @@ void NeoDriver::UpdateData(const ros::TimerEvent& e)
 
     sensor_msgs::JointState joint_state;
     joint_state.header.stamp = ros::Time::now();
+    joint_state.header.frame_id = "Real-time state data of Robot";
     joint_state.name.resize(joint_size);
     joint_state.position.resize(joint_size);
     joint_state.velocity.resize(joint_size);
@@ -86,10 +108,9 @@ void NeoDriver::UpdateData(const ros::TimerEvent& e)
     }
     memcpy(joints_record, joints, sizeof(joints));
     memcpy(velocity_record, velocity, sizeof(velocity));
-    JointStatePublisher.publish(joint_state);
+    joint_state_publisher.publish(joint_state);
 
     int inner_status = interfaces.GetInnerStatus();
-    industrial_msgs::RobotStatus robot_status;
     robot_status.mode.val = (int8_t)2;
     robot_status.e_stopped.val = (int8_t)inner_status & ST_EMERGENCY;
     robot_status.drives_powered.val = (int8_t)((inner_status & ST_READY) >> 9);
@@ -97,7 +118,7 @@ void NeoDriver::UpdateData(const ros::TimerEvent& e)
     robot_status.in_motion.val = (int8_t)(1 - ((inner_status & ST_RUN_NONE) >> 8));
     robot_status.in_error.val = (int8_t)error;
     robot_status.error_code = (int32_t)status;
-    RobotStatusPublisher.publish(robot_status);
+    robot_status_publisher.publish(robot_status);
 }
 
 bool NeoDriver::executeMoveJoints(neo_msgs::MoveJoints::Request &req, neo_msgs::MoveJoints::Response &res)
@@ -148,6 +169,33 @@ bool NeoDriver::executeMoveEndpos(neo_msgs::MoveEndpos::Request &req, neo_msgs::
     }
     res.status = _status; 
     return true;
+}
+
+void NeoDriver::actionGoal(FollowJointTrajectoryActionServer::GoalHandle goal_handle)
+{
+    control_msgs::FollowJointTrajectoryResult result;
+    
+    if (!goal_handle.getGoal()->trajectory.points.empty())
+    {
+        
+
+
+
+        ROS_ERROR("Controller is not actived.");
+        result.error_code = control_msgs::FollowJointTrajectoryResult::INVALID_JOINTS;
+        goal_handle.setRejected(result, "Controller is not actived.");
+    }
+    else
+    {
+        ROS_ERROR("Joint Trajectory is empty.");
+        result.error_code = control_msgs::FollowJointTrajectoryResult::INVALID_GOAL;
+        goal_handle.setRejected(result, "Joint Trajectory is empty.");
+    }
+}
+
+void NeoDriver::actionCancel(FollowJointTrajectoryActionServer::GoalHandle goal_handle)
+{
+    ROS_INFO("Follow Joint trajectory action cancel.");
 }
 
 

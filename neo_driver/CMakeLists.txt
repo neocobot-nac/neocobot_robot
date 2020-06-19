@@ -13,13 +13,31 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   control_msgs
   industrial_msgs
+  industrial_utils
   trajectory_msgs
   neo_msgs
+  actionlib_msgs
+  actionlib
+  urdf
 )
 
 catkin_package(
   INCLUDE_DIRS include
-  CATKIN_DEPENDS roscpp std_msgs sensor_msgs control_msgs industrial_msgs trajectory_msgs neo_msgs
+  CATKIN_DEPENDS 
+  roscpp
+  std_msgs
+  sensor_msgs
+  control_msgs
+  industrial_msgs
+  industrial_utils
+  trajectory_msgs
+  neo_msgs
+  actionlib_msgs
+  actionlib
+  urdf
+  moveit_core
+  moveit_ros_planning_interface
+  interactive_markers
 )
 
 include_directories(include ${catkin_INCLUDE_DIRS})

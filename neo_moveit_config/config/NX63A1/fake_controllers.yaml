@@ -7,6 +7,3 @@ controller_list:
       - fourth_joint
       - fifth_joint
       - sixth_joint
-  - name: fake_endeffector_controller
-    joints:
-      []

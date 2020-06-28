@@ -49,7 +49,20 @@ else()
 endif()
 
 ## Declare a C++ executable
-set(${PROJECT_NAME}_SOURCES src/NeoMainNode.cpp src/NeoDriver.cpp src/interfaces.cpp)
+set(${PROJECT_NAME}_SOURCES 
+        src/NeoMainNode.cpp 
+        src/NeoDriver.cpp 
+        src/interfaces.cpp)
 add_executable(neo_driver ${${PROJECT_NAME}_SOURCES})
 add_dependencies(neo_driver neo_msgs_gencpp)
 target_link_libraries(neo_driver ${catkin_LIBRARIES} pthread dl)
+
+add_executable(follow_joint_trajectory_application applications/follow_joint_trajectory_application.cpp)
+add_dependencies(follow_joint_trajectory_application neo_msgs_gencpp)
+target_link_libraries(follow_joint_trajectory_application ${catkin_LIBRARIES} pthread dl)
+
+
+
+
+
+

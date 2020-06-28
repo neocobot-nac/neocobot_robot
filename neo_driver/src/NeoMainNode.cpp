@@ -1,32 +1,10 @@
 #include "NeoDriver.h"
+#include "rosUtils.h"
 
 #include <signal.h>
+
 #include <string>
-
 using std::string;
-using std::boolalpha;
-using std::istringstream;
-
-bool get_param(const char* name, string* value)
-{
-    string param_name = "~";
-    param_name = param_name + name;
-
-    if (ros::param::has(param_name.c_str()))
-    {
-        ros::param::get(param_name.c_str(), *value);
-    }
-    else if (ros::param::has(name))
-    {
-        ros::param::get(name, *value);
-    }
-    else
-    {
-        *value = "";
-        return false;
-    }
-    return true;
-}
 
 void NeoSigintHandler(int sig)
 {
@@ -37,6 +15,7 @@ void NeoSigintHandler(int sig)
 int main(int argc, char **argv) 
 {
     ros::init(argc, argv, "neo_driver");
+    signal(SIGINT, NeoSigintHandler);
 
     string s_ip = "127.0.0.1";
     string s_port = "8301";
@@ -55,8 +34,7 @@ int main(int argc, char **argv)
         }
         else
         {
-            ROS_WARN("Could not get robot_ip parameter. Using default value: 127.0.0.1.");
-            s_ip = "127.0.0.1";
+            ROS_WARN("Could not get robot_ip parameter. Using default value: %s.", s_ip.c_str());
         }
     }
 
@@ -69,8 +47,7 @@ int main(int argc, char **argv)
         }
         else
         {
-            ROS_WARN("Could not get robot_port parameter. Using default value: 8301.");
-            s_port = "8301";
+            ROS_WARN("Could not get robot_port parameter. Using default value: %s.", s_port.c_str());
         }
     }
 
@@ -83,8 +60,7 @@ int main(int argc, char **argv)
         }
         else
         {
-            ROS_WARN("Could not get robot_serial parameter. Using default value.");
-            s_serial = "000027104E20";
+            ROS_WARN("Could not get robot_serial parameter. Using default value: %s.", s_serial.c_str());
         }
     }
 
@@ -97,8 +73,7 @@ int main(int argc, char **argv)
         }
         else
         {
-            ROS_WARN("Could not get robot_timeout parameter. Using default value.");
-            s_timeout = "3";
+            ROS_WARN("Could not get robot_timeout parameter. Using default value: %s.", s_timeout.c_str());
         }
     }
 
@@ -111,8 +86,7 @@ int main(int argc, char **argv)
         }
         else
         {
-            ROS_WARN("Could not get robot_transport parameter. Using default value.");
-            s_transport = "1";
+            ROS_WARN("Could not get robot_transport parameter. Using default value: %s.", s_transport.c_str());
         }
     }
 
@@ -125,8 +99,7 @@ int main(int argc, char **argv)
 		    }
         else
 		    {
-            ROS_WARN("Could not get robot_name parameter. Using default value: NX63A1.");
-            s_name = "NX63A1";
+            ROS_WARN("Could not get robot_name parameter. Using default value: %s.", s_name.c_str());
 		    }
 	  }
 
@@ -139,33 +112,27 @@ int main(int argc, char **argv)
 		    }
         else
 		    {
-            ROS_WARN("Could not get robot_mode parameter. Using default value.");
-            s_mode = "0";
+            ROS_WARN("Could not get robot_mode parameter. Using default value: %s.", s_mode.c_str());
 		    }
 	  }
 
     /* neo_driver */
-    string action_name = s_name + "/follow_joint_trajectory";
-    NeoDriver neo_driver(action_name);
-    if (!neo_driver.Connect(s_ip, s_port, s_serial, s_timeout, s_transport, s_name, s_mode))
+    NeoDriver neo_driver;
+    const char* ip = s_ip.c_str();
+    short int port = stoi(s_port);
+    const char* serial = s_serial.c_str();
+    unsigned int timeout = stoi(s_timeout);
+    int transport = stoi(s_transport);
+    const char* name = s_name.c_str();
+    unsigned int mode = stoi(s_mode);
+    if (!neo_driver.Connect(ip, port, serial, timeout, transport, name, mode))
     {
         ROS_ERROR("Connect Robot failed !!!");
         neo_driver.Disconnect();
         return(0);
     }
 
-    signal(SIGINT, NeoSigintHandler);
-
     neo_driver.SetupROS();
-
-    // ros::Rate loop_rate(100);
-	  // while(ros::ok())
-    // {
-    //     neo_driver.UpdateData();
-    //     ros::spinOnce();
-		//     loop_rate.sleep();
-	  // }
-
     ros::AsyncSpinner spinner(6);
     spinner.start();
     ros::waitForShutdown();

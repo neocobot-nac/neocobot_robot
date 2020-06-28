@@ -5,12 +5,16 @@ find_package(catkin REQUIRED COMPONENTS message_generation std_msgs)
 add_message_files(
   FILES
   Pose.msg
+  Joints.msg
 )
 
 add_service_files(
   FILES
+  GetJointIds.srv
   MoveJoints.srv
   MoveEndpos.srv
+  MoveJ.srv
+  Stop.srv
 )
 
 generate_messages(

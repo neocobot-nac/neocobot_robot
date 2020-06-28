@@ -3,10 +3,11 @@
   <arg name="sim" default="false" />
   <arg name="debug" default="false" />
     
+  <!-- Launch follow_joint_trajectory_application -->
+  <node pkg="neo_driver" type="follow_joint_trajectory_application" name="follow_joint_trajectory_application" unless="$(arg sim)"/>
+
   <!-- Remap follow_joint_trajectory -->
   <remap if="$(arg sim)" from="/follow_joint_trajectory" to="/arm_controller/follow_joint_trajectory"/>
-  
-  <!-- Remap follow_joint_trajectory -->
   <remap unless="$(arg sim)" from="/follow_joint_trajectory" to="/NX63A1/follow_joint_trajectory"/>
 
   <!-- Launch moveit -->

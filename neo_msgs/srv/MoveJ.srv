@@ -1,0 +1,8 @@
+Joints[] points
+float32 velocity
+float32 acceleration
+float32 interval
+uint32 mode
+int32 loop
+---
+int64 status

@@ -7,15 +7,16 @@
   <arg name="robot_name" doc="name of robot" />
   <arg name="robot_mode" default="1" doc="simulator mode"/>
 
+  <param name="robot_ip" type="str" value="$(arg robot_ip)"/>
+  <param name="robot_port" type="str" value="$(arg robot_port)"/>
+  <param name="robot_serial" type="str" value="$(arg robot_serial)"/>
+  <param name="robot_timeout" type="str" value="$(arg robot_timeout)"/>
+  <param name="robot_transport" type="str" value="$(arg robot_transport)"/>
+  <param name="robot_name" type="str" value="$(arg robot_name)"/>
+  <param name="robot_mode" type="str" value="$(arg robot_mode)"/>
+
   <!-- driver -->
   <node name="neo_driver" pkg="neo_driver" type="neo_driver" output="screen">
-    <param name="robot_ip" type="str" value="$(arg robot_ip)"/>
-    <param name="robot_port" type="str" value="$(arg robot_port)"/>
-    <param name="robot_serial" type="str" value="$(arg robot_serial)"/>
-    <param name="robot_timeout" type="str" value="$(arg robot_timeout)"/>
-    <param name="robot_transport" type="str" value="$(arg robot_transport)"/>
-    <param name="robot_name" type="str" value="$(arg robot_name)"/>
-    <param name="robot_mode" type="str" value="$(arg robot_mode)"/>
   </node>
 
   <!-- Combine joint values -->

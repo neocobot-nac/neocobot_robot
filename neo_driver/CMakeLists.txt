@@ -13,7 +13,6 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   control_msgs
   industrial_msgs
-  industrial_utils
   trajectory_msgs
   neo_msgs
   actionlib_msgs
@@ -29,7 +28,6 @@ catkin_package(
   sensor_msgs
   control_msgs
   industrial_msgs
-  industrial_utils
   trajectory_msgs
   neo_msgs
   actionlib_msgs
@@ -37,7 +35,6 @@ catkin_package(
   urdf
   moveit_core
   moveit_ros_planning_interface
-  interactive_markers
 )
 
 include_directories(include ${catkin_INCLUDE_DIRS})

@@ -17,7 +17,7 @@
   <run_depend>neo_description</run_depend>
   <run_depend>neo_gazebo</run_depend>
   <run_depend>neo_msgs</run_depend>
-
+  <run_depend>neo_moveit_config</run_depend>
   <export>
     <metapackage/>
   </export>

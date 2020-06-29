@@ -5,14 +5,14 @@
   <description>
      An automatically generated package with all the configuration and launch files for using the omni6_lite with the MoveIt! Motion Planning Framework
   </description>
-  <author email="shaojie@neocobot.com">Nac</author>
-  <maintainer email="shaojie@neocobot.com">Nac</maintainer>
-
-  <license>BSD</license>
-
+  <author>Huang Shaojie</author>
+  <author email="shaojie@neocobot.com">Huang Shaojie</author>
+  <maintainer email="shaojie@neocobot.com">Huang Shaojie</maintainer>
+  <url type="website">https://github.com/neocobot-nac/NeoROS</url>
   <url type="website">http://moveit.ros.org/</url>
   <url type="bugtracker">https://github.com/ros-planning/moveit/issues</url>
   <url type="repository">https://github.com/ros-planning/moveit</url>
+  <license>GPL-3.0</license>
 
   <buildtool_depend>catkin</buildtool_depend>
 

@@ -3,15 +3,11 @@
   <name>neo_driver</name>
   <version>1.0.0</version>
   <description> The neo_driver package. </description>
-
-  <maintainer email="shaojie@neocobot.com">Huang Shaojie</maintainer>
-
-  <license>BSD</license>
-
-  <url type="website">http://github.com/neocobot-nac/NeoROS.git</url>
-
   <author>Huang Shaojie</author>
   <author email="shaojie@neocobot.com">Huang Shaojie</author>
+  <maintainer email="shaojie@neocobot.com">Huang Shaojie</maintainer>
+  <url type="website">https://github.com/neocobot-nac/NeoROS</url>
+  <license>GPL-3.0</license>
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>roscpp</build_depend>
@@ -19,7 +15,6 @@
   <build_depend>sensor_msgs</build_depend>
   <build_depend>control_msgs</build_depend>
   <build_depend>industrial_msgs</build_depend>
-  <build_depend>industrial_utils</build_depend>
   <build_depend>trajectory_msgs</build_depend>
   <build_depend>simple_msgs</build_depend>
   <build_depend>actionlib_msgs</build_depend>
@@ -30,7 +25,6 @@
   <build_depend>moveit_core</build_depend>
   <build_depend>moveit_ros_planning_interface</build_depend>
   <build_depend>moveit_ros_perception</build_depend>
-  <build_depend>interactive_markers</build_depend>
   <build_depend>geometric_shapes</build_depend>
 
   <run_depend>roscpp</run_depend>
@@ -38,7 +32,6 @@
   <run_depend>sensor_msgs</run_depend>
   <run_depend>control_msgs</run_depend>
   <run_depend>industrial_msgs</run_depend>
-  <run_depend>industrial_utils</run_depend>
   <run_depend>trajectory_msgs</run_depend>
   <run_depend>simple_msgs</run_depend>
   <run_depend>actionlib_msgs</run_depend>
@@ -49,5 +42,4 @@
   <run_depend>moveit_core</run_depend>
   <run_depend>moveit_ros_planning_interface</run_depend>
   <run_depend>moveit_ros_perception</run_depend>
-  <run_depend>interactive_markers</run_depend>
 </package>

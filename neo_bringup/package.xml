@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>neo_bringup</name>
-  <version>0.1.0</version>
+  <version>1.0.0</version>
   <description>
       The neo_bringup package.
   </description>

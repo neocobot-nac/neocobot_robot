@@ -3,7 +3,10 @@ Panels:
     Help Height: 78
     Name: Displays
     Property Tree Widget:
-      Expanded: ~
+      Expanded:
+        - /Global Options1
+        - /Status1
+        - /Axes1
       Splitter Ratio: 0.5
     Tree Height: 565
   - Class: rviz/Selection
@@ -63,11 +66,10 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        ee_flange_link:
+        ee_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: true
         fifth_link:
           Alpha: 1
           Show Axes: false
@@ -113,7 +115,7 @@ Visualization Manager:
       Length: 0.100000001
       Name: Axes
       Radius: 0.00999999978
-      Reference Frame: ee_flange_link
+      Reference Frame: ee_link
       Value: true
   Enabled: true
   Global Options:
@@ -140,25 +142,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 1.89790618
+      Distance: 2.30640578
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.100373022
-        Y: -0.137476757
-        Z: 0.373243421
+        X: -0.143381715
+        Y: -0.145925477
+        Z: 0.388619512
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.545397818
+      Pitch: 0.500398636
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.810397983
+      Yaw: 5.85859823
     Saved: ~
 Window Geometry:
   Displays:
@@ -176,5 +178,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1200
-  X: 174
-  Y: 86
+  X: 65
+  Y: 60

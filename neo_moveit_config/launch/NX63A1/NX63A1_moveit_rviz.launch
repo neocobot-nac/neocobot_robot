@@ -1,0 +1,8 @@
+<launch>
+
+  <include file="$(find neo_moveit_config)/launch/moveit_rviz.launch">
+    <arg name="robot_name" value="NX63A1"/>
+    <arg name="config" value="true"/>
+  </include>
+
+</launch>

@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- Load description -->
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find neo_description)/urdf/NX63A1/NX63A1_robot_with_ag95_d435.urdf.xacro'"/> 
+  
+</launch>

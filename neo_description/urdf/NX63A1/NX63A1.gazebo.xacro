@@ -14,7 +14,7 @@
     <xacro:gazebo_block link_name="fourth_link" />
     <xacro:gazebo_block link_name="fifth_link" />
     <xacro:gazebo_block link_name="sixth_link" />
-    <xacro:gazebo_block link_name="ee_flange_link" />
+    <xacro:gazebo_block link_name="ee_link" />
   </xacro:macro>
 
 </robot>

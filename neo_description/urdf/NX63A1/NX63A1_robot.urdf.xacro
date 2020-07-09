@@ -7,15 +7,12 @@
   <!-- NX63A1 -->
   <xacro:include filename="$(find neo_description)/urdf/NX63A1/NX63A1.urdf.xacro" />
 
-  <!-- arm -->
-  <xacro:NX63A1_robot />
-
+  <!-- world link -->
   <link name="world" />
 
-  <joint name="world_joint" type="fixed" >
-    <parent link="world" />
-    <child link="base_link" />
-    <origin xyz="0 0 0" rpy="0 0 0" />
-  </joint>
+  <!-- arm -->
+  <xacro:NX63A1_robot connected_to='world' >
+  	<origin xyz="0 0 0" rpy="0 0 0"/>
+  </xacro:NX63A1_robot>
 
 </robot>

@@ -1,0 +1,196 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:macro name="d435_gazebo">
+    <!-- sensor name (color/ired1/ired2/depth) is defined in realsense gazebo plugin, do not change. -->
+    <gazebo>
+      <plugin name="d435" filename="librealsense_gazebo_plugin.so">
+        <depthUpdateRate>60</depthUpdateRate>
+        <colorUpdateRate>60</colorUpdateRate>
+        <infraredUpdateRate>60</infraredUpdateRate>
+        <depthTopicName>camera/depth/image_raw</depthTopicName>
+        <depthCameraInfoTopicName>depth_camera</depthCameraInfoTopicName> <!-- Not used -->
+        <colorTopicName>camera/color/image_raw</colorTopicName>
+        <colorCameraInfoTopicName>color_camera</colorCameraInfoTopicName> <!-- Not used -->
+        <infrared1TopicName>camera/ir/image_raw</infrared1TopicName>
+        <infrared1CameraInfoTopicName>ir_camera</infrared1CameraInfoTopicName> <!-- Not used -->
+        <infrared2TopicName>camera/ir2/image_raw</infrared2TopicName>
+        <infrared2CameraInfoTopicName>ir2_camera</infrared2CameraInfoTopicName> <!-- Not used -->
+        <colorOpticalframeName>color</colorOpticalframeName> <!-- Same as sensor name -->
+        <depthOpticalframeName>depth</depthOpticalframeName> <!-- Same as sensor name -->
+        <infrared1OpticalframeName>ired1</infrared1OpticalframeName> <!-- Same as sensor name -->
+        <infrared2OpticalframeName>ired2</infrared2OpticalframeName> <!-- Same as sensor name -->
+        <rangeMinDepth>0.3</rangeMinDepth>
+        <rangeMaxDepth>10.0</rangeMaxDepth>
+        <pointCloud>1</pointCloud> <!-- enable pointCloud -->
+        <pointCloudTopicName>camera/depth_registered/points</pointCloudTopicName>
+        <pointCloudCutoff>0.5</pointCloudCutoff>
+        <pointCloudCutoffMax>8.0</pointCloudCutoffMax>
+      </plugin>
+    </gazebo>
+
+    <gazebo reference="camera_flange_link">
+      <selfCollide>1</selfCollide>
+    </gazebo>
+
+    <gazebo reference="camera_link">
+      <selfCollide>1</selfCollide>
+    </gazebo>
+
+    <gazebo reference="camera_color_frame">
+      <selfCollide>1</selfCollide>
+      <enable_wind>0</enable_wind>
+      <kinematic>0</kinematic>
+      <!-- <gravity>1</gravity> -->
+      <!-- <mu>1</mu> -->
+      <mu2>1</mu2>
+      <fdir1>0 0 0</fdir1>
+      <!-- <slip1>0</slip1>
+      <slip2>0</slip2> -->
+      <kp>1e+13</kp>
+      <kd>1</kd>
+      <!-- <max_vel>0.01</max_vel>
+      <min_depth>0</min_depth> -->
+
+      <sensor name="color" type="camera">
+        <pose frame="">0 0 0 0 0 0</pose>
+        <camera name="color_optical_frame">
+          <horizontal_fov>1.047</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+            <format>RGB_INT8</format>
+          </image>
+          <clip>
+            <near>0.1</near>
+            <far>100</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.007</stddev>
+          </noise>
+        </camera>
+        <always_on>1</always_on>
+        <update_rate>60</update_rate>
+        <visualize>1</visualize>
+      </sensor>
+    </gazebo>
+
+    <gazebo reference="camera_infra1_frame">
+      <selfCollide>1</selfCollide>
+      <enable_wind>0</enable_wind>
+      <kinematic>0</kinematic>
+      <!-- <gravity>1</gravity> -->
+      <!-- <mu>1</mu> -->
+      <mu2>1</mu2>
+      <fdir1>0 0 0</fdir1>
+      <!-- <slip1>0</slip1>
+      <slip2>0</slip2> -->
+      <kp>1e+13</kp>
+      <kd>1</kd>
+      <!-- <max_vel>0.01</max_vel>
+      <min_depth>0</min_depth> -->
+
+      <sensor name="ired1" type="camera">
+        <camera name="infra1_optical_frame">
+          <horizontal_fov>1.047</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+            <format>L_INT8</format>
+          </image>
+          <clip>
+            <near>0.1</near>
+            <far>100</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.05</stddev>
+          </noise>
+        </camera>
+        <always_on>1</always_on>
+        <update_rate>60</update_rate>
+        <visualize>0</visualize>
+      </sensor>
+    </gazebo>
+
+    <gazebo reference="camera_infra2_frame">
+      <selfCollide>1</selfCollide>
+      <enable_wind>0</enable_wind>
+      <kinematic>0</kinematic>
+      <!-- <gravity>1</gravity> -->
+      <!-- <mu>1</mu> -->
+      <mu2>1</mu2>
+      <fdir1>0 0 0</fdir1>
+      <!-- <slip1>0</slip1>
+      <slip2>0</slip2> -->
+      <kp>1e+13</kp>
+      <kd>1</kd>
+      <!-- <max_vel>0.01</max_vel>
+      <min_depth>0</min_depth> -->
+
+      <sensor name="ired2" type="camera">
+        <camera name="infra2_optical_frame">
+          <horizontal_fov>1.047</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+            <format>L_INT8</format>
+          </image>
+          <clip>
+            <near>0.1</near>
+            <far>100</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.05</stddev>
+          </noise>
+        </camera>
+        <always_on>1</always_on>
+        <update_rate>60</update_rate>
+        <visualize>0</visualize>
+      </sensor>
+    </gazebo>
+
+    <gazebo reference="camera_depth_frame">
+      <selfCollide>1</selfCollide>
+      <enable_wind>0</enable_wind>
+      <kinematic>0</kinematic>
+      <!-- <gravity>1</gravity> -->
+      <!-- <mu>1</mu> -->
+      <mu2>1</mu2>
+      <fdir1>0 0 0</fdir1>
+      <!-- <slip1>0</slip1>
+      <slip2>0</slip2> -->
+      <kp>1e+13</kp>
+      <kd>1</kd>
+      <!-- <max_vel>0.01</max_vel>
+      <min_depth>0</min_depth> -->
+
+      <sensor name="depth" type="depth">
+        <camera name="depth_optical_frame">
+          <horizontal_fov>1.047</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+          </image>
+          <clip>
+            <near>0.1</near>
+            <far>100</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.100</stddev>
+          </noise>
+        </camera>
+        <always_on>1</always_on>
+        <update_rate>60</update_rate>
+        <visualize>0</visualize>
+      </sensor>
+    </gazebo>
+  </xacro:macro>
+</robot>

@@ -1,0 +1,167 @@
+<?xml version="1.0"?>
+
+<!--
+License: Apache 2.0. See LICENSE file in root directory.
+Copyright(c) 2017 Intel Corporation. All Rights Reserved
+
+This is the URDF model for the Intel RealSense 430 camera, in it's
+aluminum peripherial evaluation case.
+-->
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+	<xacro:include filename="$(find neo_description)/urdf/Sensor/D435/realsense_d435.gazebo.xacro" />
+  <xacro:macro name="realsense_d435" params="connected_to *origin">
+    <xacro:property name="M_PI" value="3.1415926535897931" />
+  
+    <!-- The following values model the aluminum peripherial case for the D435 camera -->
+    <xacro:property name="d435_cam_width" value="0.0905"/>
+    <xacro:property name="d435_cam_height" value="0.025"/>
+    <xacro:property name="d435_cam_depth" value="0.02505"/>
+
+    <!-- The following offset values model depth camera for the D435 camera -->
+    <xacro:property name="d435_cam_depth_px" value="0"/>
+    <xacro:property name="d435_cam_depth_py" value="0"/>
+    <xacro:property name="d435_cam_depth_pz" value="0"/>
+
+    <!-- The following offset values model infra1 camera for the D435 camera -->
+    <xacro:property name="d435_cam_infra1_px" value="-0.0325"/>
+    <xacro:property name="d435_cam_infra1_py" value="0.0"/>
+    <xacro:property name="d435_cam_infra1_pz" value="0.0"/>
+
+    <!-- The following offset values model infra2 camera for the D435 camera -->
+    <xacro:property name="d435_cam_infra2_px" value="0.0175"/>
+    <xacro:property name="d435_cam_infra2_py" value="0.0"/>
+    <xacro:property name="d435_cam_infra2_pz" value="0.0"/>
+
+    <!-- The following offset values model color camera for the D435 camera -->
+    <xacro:property name="d435_cam_color_px" value="0.0325"/>
+    <xacro:property name="d435_cam_color_py" value="0.0"/>
+    <xacro:property name="d435_cam_color_pz" value="0.0"/>
+
+    <!-- camera body, with origin at bottom screw mount -->
+    <joint name="camera_joint" type="fixed">
+      <xacro:insert_block name="origin" />
+      <parent link="${connected_to}"/>
+      <child link="camera_flange_link" />
+    </joint>
+    
+    <link name="camera_flange_link">
+      <visual>
+        <geometry>
+          <mesh filename="package://neo_description/meshes/Sensor/D435/camera_flange_link.STL" scale = "0.001 0.001 0.001" />
+        </geometry>
+        <material name="LightGrey">
+          <color rgba="0.75294 0.75294 0.75294 1" />
+        </material>
+      </visual>
+      <collision>
+        <geometry>
+            <mesh filename="package://neo_description/meshes/Sensor/D435/camera_flange_link.STL" scale = "0.001 0.001 0.001" />
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="0.034" />
+        <origin xyz="0.0 0.0 0.0" />
+        <inertia ixx = "0.0022573" ixy = "0.000000" ixz = "0.000000"
+                iyx = "0.000000" iyy = "0.0038711" iyz = "0.0003245"
+                izx = "0.000000" izy = "0.0003245" izz = "0.0023745" />
+      </inertial>
+    </link>
+
+    <joint name="camera_flange_link_joint" type="fixed">
+      <origin xyz="${d435_cam_width/2} 0.0455 ${d435_cam_depth+0.0655}" rpy="0 0 0"/>
+      <parent link="camera_flange_link"/>
+      <child link="camera_link" />
+    </joint>
+
+    <link name="camera_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+	        <mesh filename="package://neo_description/meshes/Sensor/D435/d435.dae" />
+        </geometry>
+        <material name="aluminum">
+          <color rgba="0.5 0.5 0.5 1"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://neo_description/meshes/Sensor/D435/d435.dae" />
+        </geometry>
+      </collision>
+      <inertial>
+        <!-- The following are not reliable values, and should not be used for modeling -->
+        <mass value="0.564" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="0.003881243" ixy="0.0" ixz="0.0" iyy="0.000498940" iyz="0.0" izz="0.003879257" />
+      </inertial>
+    </link>
+
+    <!-- camera depth joints and links -->
+    <joint name="camera_depth_joint" type="fixed">
+      <origin xyz="${d435_cam_depth_px} ${d435_cam_depth_py} ${d435_cam_depth_pz}" rpy="${-M_PI/2} ${-M_PI/2} 0"/>
+      <parent link="camera_link"/>
+      <child link="camera_depth_frame" />
+    </joint>
+    <link name="camera_depth_frame"/>
+
+    <!-- The default position is change since in Rviz the cloud depth axis is Z not X-->
+    <joint name="camera_depth_optical_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="${M_PI/2} ${M_PI} ${M_PI/2}" />
+      <parent link="camera_depth_frame" />
+      <child link="depth" />
+    </joint>
+    <link name="depth"/>
+
+    <!-- camera left IR joints and links -->
+    <joint name="camera_infra1_joint" type="fixed">
+      <origin xyz="${d435_cam_infra1_px} ${d435_cam_infra1_py} ${d435_cam_infra1_pz}" rpy="${-M_PI/2} ${-M_PI/2} 0" />
+      <parent link="camera_link" />
+      <child link="camera_infra1_frame" />
+    </joint>
+    <link name="camera_infra1_frame"/>
+
+    <joint name="camera_infra1_optical_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <parent link="camera_infra1_frame" />
+      <child link="ired1" />
+    </joint>
+    <link name="ired1"/>
+
+    <!-- camera right IR joints and links -->
+    <joint name="camera_infra2_joint" type="fixed">
+      <origin xyz="${d435_cam_infra2_px} ${d435_cam_infra2_py} ${d435_cam_infra2_pz}" rpy="${-M_PI/2} ${-M_PI/2} 0" />
+      <parent link="camera_link" />
+      <child link="camera_infra2_frame" />
+    </joint>
+    <link name="camera_infra2_frame"/>
+
+    <joint name="camera_infra2_optical_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <parent link="camera_infra2_frame" />
+      <child link="ired2" />
+    </joint>
+    <link name="ired2"/>
+
+    <!-- camera color joints and links -->
+    <joint name="camera_color_joint" type="fixed">
+      <origin xyz="${d435_cam_color_px} ${d435_cam_color_py} ${d435_cam_color_pz}" rpy="${-M_PI/2} ${-M_PI/2} 0" />
+      <parent link="camera_link" />
+      <child link="camera_color_frame" />
+    </joint>
+    <link name="camera_color_frame"/>
+
+    <joint name="camera_color_optical_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <parent link="camera_color_frame" />
+      <child link="color" />
+    </joint>
+    <link name="color"/>
+
+    <!-- load realsense gazebo plugin(need realsense_gazebo_plugin package) -->
+    <!-- link name (color/ired1/ired2/depth) is defined in realsense gazebo plugin, do not change. -->
+    <xacro:d435_gazebo />
+
+  </xacro:macro>
+</robot>

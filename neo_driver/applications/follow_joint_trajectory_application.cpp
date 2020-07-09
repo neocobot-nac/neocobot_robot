@@ -108,7 +108,7 @@ public:
 
             msg.request.velocity = 20.0;
             msg.request.acceleration = 80.0;
-            msg.request.interval = 0.15;
+            msg.request.interval = 0.025;
             msg.request.mode = OPEN_MODE;
             msg.request.loop = 1;
             movej_client.call(msg);

@@ -1,10 +1,66 @@
 <?xml version="1.0"?>
 <launch>
 
-  <arg name="robot_name" doc="name of robot" />
+  <arg name="robot_name" doc="name of robot" default="" />
+  <arg name="ee_name" doc="name of end effector" default="" />
+  <arg name="sensor_name" doc="name of sensor" default="" />
 
   <!-- Load robot description -->
-  <include file="$(find neo_description)/launch/$(arg robot_name)_upload.launch"/>
+  <group if="$(eval arg('robot_name')!='')" >
+    <group if="$(eval arg('ee_name')!='')" >
+      <arg if="$(eval arg('sensor_name')!='')" name="name" value="$(arg robot_name)_with_$(arg ee_name)_$(arg sensor_name)" />
+      <arg if="$(eval arg('sensor_name')=='')" name="name" value="$(arg robot_name)_with_$(arg ee_name)" />
+
+      <group if="$(eval arg('name')!='')" >
+        <include file="$(find neo_description)/launch/$(arg name)_upload.launch" />
+        <!-- rviz -->
+        <node name="$(arg name)_rviz" pkg="rviz" type="rviz" args="-d $(find neo_description)/rviz/$(arg name).rviz" />
+      </group>
+
+    </group>
+
+    <group if="$(eval arg('ee_name')=='')" >
+      <arg if="$(eval arg('sensor_name')!='')" name="name" value="$(arg robot_name)_with_$(arg sensor_name)" />
+      <arg if="$(eval arg('sensor_name')=='')" name="name" value="$(arg robot_name)" />
+
+      <group if="$(eval arg('name')!='')" >
+        <include file="$(find neo_description)/launch/$(arg name)_upload.launch" />
+
+        <!-- rviz -->
+        <node name="$(arg name)_rviz" pkg="rviz" type="rviz" args="-d $(find neo_description)/rviz/$(arg name).rviz" />
+      </group>
+
+    </group>
+
+  </group>
+
+  <group if="$(eval arg('robot_name')=='')" >
+
+    <group if="$(eval arg('ee_name')!='')" >
+      <arg if="$(eval arg('sensor_name')!='')" name="name" value="$(arg ee_name)_with_$(arg sensor_name)" />
+      <arg if="$(eval arg('sensor_name')=='')" name="name" value="$(arg ee_name)" />
+
+      <group if="$(eval arg('name')!='')" >
+        <include file="$(find neo_description)/launch/$(arg name)_upload.launch" />
+        <!-- rviz -->
+        <node name="$(arg name)_rviz" pkg="rviz" type="rviz" args="-d $(find neo_description)/rviz/$(arg name).rviz" />
+      </group>
+
+    </group>
+
+    <group if="$(eval arg('ee_name')=='')" >
+      <arg if="$(eval arg('sensor_name')!='')" name="name" value="$(arg sensor_name)" />
+      <arg if="$(eval arg('sensor_name')=='')" name="name" value="" />
+
+      <group if="$(eval arg('name')!='')" >
+        <include file="$(find neo_description)/launch/$(arg name)_upload.launch" />
+
+        <!-- rviz -->
+        <node name="$(arg name)_rviz" pkg="rviz" type="rviz" args="-d $(find neo_description)/rviz/$(arg name).rviz" />
+      </group>
+      
+    </group>
+  </group>
 
   <!-- Joint state publisher -->
   <node name="joint_state_publisher_gui" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" >
@@ -13,8 +69,5 @@
 
   <!-- Combine joint values -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"/>
-
-  <!-- rviz -->
-  <node name="$(arg robot_name)_rviz" pkg="rviz" type="rviz" args="-d $(find neo_description)/rviz/$(arg robot_name).rviz" />
 
 </launch>

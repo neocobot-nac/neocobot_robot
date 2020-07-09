@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- Load description -->
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find neo_description)/urdf/EndEffector/AG95/dh_robotics_ag95_gripper.urdf.xacro'"/> 
+  
+</launch>

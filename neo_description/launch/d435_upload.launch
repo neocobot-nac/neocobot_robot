@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- Load description -->
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find neo_description)/urdf/Sensor/D435/realsense_d435_camera.urdf.xacro'"/> 
+  
+</launch>

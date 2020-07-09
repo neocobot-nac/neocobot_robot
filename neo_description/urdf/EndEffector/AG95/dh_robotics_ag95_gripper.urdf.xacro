@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="AG95" >
+
+  <!-- common stuff -->
+  <xacro:include filename="$(find neo_description)/urdf/common.gazebo.xacro" />
+
+  <!-- AG95 gripper -->
+  <xacro:include filename="$(find neo_description)/urdf/EndEffector/AG95/dh_robotics_ag95.urdf.xacro" />
+
+  <!-- world link -->
+  <link name="world" />
+
+  <!-- arm -->
+  <xacro:ag95_gripper connected_to='world' >
+  	<origin xyz="-0.042 -0.042 0" rpy="0 0 0" />
+  </xacro:ag95_gripper>
+
+</robot>

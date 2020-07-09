@@ -187,8 +187,9 @@ bool NeoDriver::executeMoveJ(neo_msgs::MoveJ::Request &req, neo_msgs::MoveJ::Res
     double _interval = req.interval;
     unsigned int _mode = req.mode;
     int _loop = req.loop;
-
+    ROS_INFO("MoveJ!");
     NEOStatus _status = interfaces.MoveJ(_size, _points, _velocity, _acceleration, _interval, _mode, _loop);
+    ROS_INFO("do MoveJ!");
     res.status = _status;
     delete []_points;
     return true;
@@ -197,7 +198,9 @@ bool NeoDriver::executeMoveJ(neo_msgs::MoveJ::Request &req, neo_msgs::MoveJ::Res
 
 bool NeoDriver::executeStop(neo_msgs::Stop::Request &req, neo_msgs::Stop::Response &res)
 {
+	ROS_INFO("Stop!");
     NEOStatus _status = interfaces.Stop();
+    ROS_INFO("do Stop!");
     res.status = _status;
     return true;
 }

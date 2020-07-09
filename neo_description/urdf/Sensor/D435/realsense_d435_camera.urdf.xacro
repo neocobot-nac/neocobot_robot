@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<robot name="realsense2_camera" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:include filename="$(find neo_description)/urdf/Sensor/D435/realsense_d435.urdf.xacro" />
+  
+  <link name="world" />
+  <xacro:realsense_d435 connected_to="world">
+    <origin xyz="0 -0.045 0" rpy="1.5708 0 1.5708"/>
+  </xacro:realsense_d435>
+</robot>

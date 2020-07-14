@@ -6,7 +6,7 @@
 <a href="http://www.neocobot.com/"><img src="https://img.shields.io/badge/Web-here-blue.svg"></a>
 </p>
 
-    Neocobot Technology is a high-tech company specializes in the development of world-class Intelligent collaborative robot, combing Internet of Things and AI frontier technologies, and promoting high efficiency, digitalization and intelligence in production, services and life.
+Neocobot Technology is a high-tech company specializes in the development of world-class Intelligent collaborative robot, combing Internet of Things and AI frontier technologies, and promoting high efficiency, digitalization and intelligence in production, services and life.
 
 # NeoROS
 

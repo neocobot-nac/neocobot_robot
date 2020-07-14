@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="robot_name" doc="name of robot" default="" />
+  <arg name="ee_name" doc="name of end effector" default="" />
+  <arg name="sensor_name" doc="name of sensor" default="" />
+  <arg name="rqt" doc="launch with rqt controller" default="false" />
+  <arg name="rviz" doc="launch with rviz gui" default="false" />
+
+  <!-- Load robot description -->
+  <group if="$(eval arg('robot_name')!='')" >
+    <group if="$(eval arg('ee_name')!='')" >
+      <arg if="$(eval arg('sensor_name')!='')" name="name" value="$(arg robot_name)_with_$(arg ee_name)_$(arg sensor_name)" />
+      <arg if="$(eval arg('sensor_name')=='')" name="name" value="$(arg robot_name)_with_$(arg ee_name)" />
+
+      <group if="$(eval arg('name')!='')" >
+        <include file="$(find neo_description)/launch/$(arg name)_upload.launch" />
+      </group>
+    </group>
+
+    <group if="$(eval arg('ee_name')=='')" >
+      <arg if="$(eval arg('sensor_name')!='')" name="name" value="$(arg robot_name)_with_$(arg sensor_name)" />
+      <arg if="$(eval arg('sensor_name')=='')" name="name" value="$(arg robot_name)" />
+
+      <group if="$(eval arg('name')!='')" >
+        <include file="$(find neo_description)/launch/$(arg name)_upload.launch" />
+      </group>
+    </group>
+  </group>
+
+  <group if="$(eval arg('robot_name')=='')" >
+
+    <group if="$(eval arg('ee_name')!='')" >
+      <arg if="$(eval arg('sensor_name')!='')" name="name" value="$(arg ee_name)_with_$(arg sensor_name)" />
+      <arg if="$(eval arg('sensor_name')=='')" name="name" value="$(arg ee_name)" />
+
+      <group if="$(eval arg('name')!='')" >
+        <include file="$(find neo_description)/launch/$(arg name)_upload.launch" />
+      </group>
+    </group>
+
+    <group if="$(eval arg('ee_name')=='')" >
+      <arg if="$(eval arg('sensor_name')!='')" name="name" value="$(arg sensor_name)" />
+      <arg if="$(eval arg('sensor_name')=='')" name="name" value="" />
+
+      <group if="$(eval arg('name')!='')" >
+        <include file="$(find neo_description)/launch/$(arg name)_upload.launch" />
+      </group>
+    </group>
+  </group>
+
+  <!-- Load gazebo world -->
+  <include file="$(find neo_gazebo)/launch/utils/gazebo_empty_world.launch" />
+
+  <!-- push robot_description to factory and spawn robot in gazebo -->
+  <node name="gazebo_model_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-urdf -param /robot_description -model robot" />
+
+  <group if="$(eval arg('robot_name')!='')" >
+    <rosparam file="$(find neo_gazebo)/controller/$(arg robot_name)/controller.yaml" command="load"/>
+    <node name="controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn $(arg robot_name)" />
+    <node name="joint_controller" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="load joint_controller" />
+  </group>
+
+  <group if="$(eval arg('ee_name')!='')" >
+    <rosparam file="$(find neo_gazebo)/controller/$(arg ee_name)/gripper_controller.yaml" command="load"/>
+    <node name="gripper_controller_spawner" pkg="controller_manager" type="controller_manager" respawn="false" output="screen" args="spawn $(arg ee_name)" />
+  </group>
+
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <include file="$(find neo_gazebo)/launch/utils/controller_utils.launch"/>
+
+  <!-- Launch rqt joint trajectory controller -->
+  <include file="$(find neo_gazebo)/launch/utils/rqt_controller.launch" if="$(arg rqt)" />
+
+  <!-- Launch rviz -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find neo_gazebo)/launch/rviz/rviz.rviz" if="$(arg rviz)" />
+
+</launch>

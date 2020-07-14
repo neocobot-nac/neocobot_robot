@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="robot_name" />
+  <arg name="ee_name" default="" />
+  <arg name="sensor_name" default="" />
+
+  <arg name="sim" default="false" />
+  <arg name="debug" default="false" />
+    
+  <!-- Launch follow_joint_trajectory_application -->
+  <node pkg="neo_driver" type="follow_joint_trajectory_application" name="follow_joint_trajectory_application" unless="$(arg sim)"/>
+
+  <!-- Remap follow_joint_trajectory -->
+  <remap from="/follow_joint_trajectory" to="/$(arg robot_name)/follow_joint_trajectory"/>
+
+  <remap from="/follow_joint_trajectory" to="/$(arg ee_name)/follow_joint_trajectory" if="$(eval arg('ee_name')!='')"/>
+
+  <!-- Run the main MoveIt executable without trajectory execution (we do not have controllers configured by default) -->
+  <include file="$(find neo_moveit_config)/launch/move_group.launch">
+    <arg name="robot_name" value="$(arg robot_name)"/>
+    <arg name="ee_name" value="$(arg ee_name)"/>
+    <arg name="sensor_name" value="$(arg sensor_name)"/>
+    <arg name="info" value="true"/>
+    <arg name="debug" value="$(arg debug)"/>
+  </include>
+
+  <!-- Run Rviz -->
+  <include file="$(find neo_moveit_config)/launch/moveit_rviz.launch">
+    <arg name="robot_name" value="$(arg robot_name)"/>
+    <arg name="ee_name" value="$(arg ee_name)"/>
+    <arg name="sensor_name" value="$(arg sensor_name)"/>
+    <arg name="debug" value="$(arg debug)"/>
+  </include>
+
+</launch>

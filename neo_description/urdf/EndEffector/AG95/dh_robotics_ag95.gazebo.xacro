@@ -58,7 +58,7 @@
     <plugin filename="libroboticsgroup_gazebo_mimic_joint_plugin.so" name="mimic_dh_robotics_ag95_4">
       <joint>gripper_finger1_joint</joint>
       <mimicJoint>gripper_finger1_finger_tip_joint</mimicJoint>
-      <multiplier>1.49462955</multiplier>          
+      <multiplier>0.49462955</multiplier>          
       <offset>0.0</offset>
     </plugin>
     <plugin filename="libroboticsgroup_gazebo_mimic_joint_plugin.so" name="mimic_dh_robotics_ag95_5">

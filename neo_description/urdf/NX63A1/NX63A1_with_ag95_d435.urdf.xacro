@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
-<robot xmlns:xacro="http://ros.org/wiki/xacro" name="NX63A1" >
-
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="NX63A1_with_ag95_d435" >
   <!-- common stuff -->
   <xacro:include filename="$(find neo_description)/urdf/common.gazebo.xacro" />
 
@@ -10,6 +9,9 @@
   <!-- AG95 -->
   <xacro:include filename="$(find neo_description)/urdf/EndEffector/AG95/dh_robotics_ag95.urdf.xacro" />
 
+  <!-- D435 -->
+  <xacro:include filename="$(find neo_description)/urdf/Sensor/D435/realsense_d435.urdf.xacro" />
+  
   <!-- world link -->
   <link name="world" />
 
@@ -22,5 +24,10 @@
   <xacro:ag95_gripper connected_to='ee_link' >
   	<origin xyz="-0.042 -0.042 0" rpy="0 0 0" />
   </xacro:ag95_gripper>
+
+  <!-- sensor -->
+  <xacro:realsense_d435 connected_to="ag95_flange_link">
+    <origin xyz="0.087 0.042 0" rpy="0 0 3.1415"/>
+  </xacro:realsense_d435>
 
 </robot>

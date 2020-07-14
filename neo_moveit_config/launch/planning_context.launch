@@ -1,7 +1,8 @@
+<?xml version="1.0"?>
 <launch>
-
-  <!-- The name of robot -->
-  <arg name="robot_name"/>
+  <arg name="robot_name" />
+  <arg name="ee_name" default=""/>
+  <arg name="sensor_name" default=""/>
 
   <!-- By default we do not overwrite the URDF. Change the following to true to change the default behavior -->
   <arg name="load_robot_description" default="false"/>
@@ -9,15 +10,35 @@
   <!-- The name of the parameter under which the URDF is loaded -->
   <arg name="robot_description" default="robot_description"/>
 
-  <!-- Load universal robot description format (URDF) -->
-  <param if="$(arg load_robot_description)" name="$(arg robot_description)" command="xacro --inorder '$(find neo_description)/urdf/$(arg robot_name)/$(arg robot_name)_robot.urdf.xacro'"/>
+  <group if="$(eval arg('ee_name')!='')" >
+    <arg if="$(eval arg('sensor_name')!='')" name="name" value="$(arg robot_name)_with_$(arg ee_name)_$(arg sensor_name)" />
+    <arg if="$(eval arg('sensor_name')=='')" name="name" value="$(arg robot_name)_with_$(arg ee_name)" />
 
-  <!-- The semantic description that corresponds to the URDF -->
-  <param name="$(arg robot_description)_semantic" textfile="$(find neo_moveit_config)/config/$(arg robot_name)/$(arg robot_name).srdf" />
+    <!-- Load universal robot description format (URDF) -->
+    <param if="$(arg load_robot_description)" name="$(arg robot_description)" command="xacro --inorder '$(find neo_description)/urdf/$(arg robot_name)/$(arg name).urdf.xacro'"/>
 
-  <!-- Load updated joint limits (override information from URDF) -->
-  <group ns="$(arg robot_description)_planning">
-    <rosparam command="load" file="$(find neo_moveit_config)/config/$(arg robot_name)/joint_limits.yaml"/>
+    <!-- The semantic description that corresponds to the URDF -->
+    <param name="$(arg robot_description)_semantic" command="$(find xacro)/xacro --inorder '$(find neo_moveit_config)/config/$(arg robot_name)/$(arg name).srdf.xacro'"/>
+
+    <!-- Load updated joint limits (override information from URDF) -->
+    <group ns="$(arg robot_description)_planning">
+      <rosparam command="load" file="$(find neo_moveit_config)/config/$(arg robot_name)/joint_limits.yaml"/>
+    </group>
+
+  </group>
+
+  <group if="$(eval arg('ee_name')=='')" >
+    <!-- Load universal robot description format (URDF) -->
+    <param if="$(arg load_robot_description)" name="$(arg robot_description)" command="xacro --inorder '$(find neo_description)/urdf/$(arg robot_name)/$(arg robot_name)_robot.urdf.xacro'"/>
+
+    <!-- The semantic description that corresponds to the URDF -->
+    <param name="$(arg robot_description)_semantic" command="$(find xacro)/xacro --inorder '$(find neo_moveit_config)/config/$(arg robot_name)/$(arg robot_name).srdf.xacro'" />
+
+    <!-- Load updated joint limits (override information from URDF) -->
+    <group ns="$(arg robot_description)_planning">
+      <rosparam command="load" file="$(find neo_moveit_config)/config/$(arg robot_name)/joint_limits.yaml"/>
+    </group>
+
   </group>
 
   <!-- Load default settings for kinematics; these settings are overridden by settings in a node's namespace -->

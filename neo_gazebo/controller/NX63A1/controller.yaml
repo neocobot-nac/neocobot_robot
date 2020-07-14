@@ -1,4 +1,4 @@
-arm_controller:
+NX63A1:
   type: position_controllers/JointTrajectoryController
   joints:
     - first_joint
@@ -21,7 +21,7 @@ arm_controller:
   state_publish_rate: 25
   action_monitor_rate: 10
 
-joint_group_position_controller:
+joint_controller:
   type: position_controllers/JointGroupPositionController
   joints:
     - first_joint

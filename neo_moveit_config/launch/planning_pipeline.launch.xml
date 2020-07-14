@@ -1,10 +1,19 @@
+<?xml version="1.0"?>
 <launch>
 
-  <!-- This file makes it easy to include different planning pipelines;
-       It is assumed that all planning pipelines are named XXX_planning_pipeline.launch  -->
+  <!-- This file makes it easy to include different planning pipelines; 
+       It is assumed that all planning pipelines are named XXX_planning_pipeline.launch  -->  
+
+  <arg name="robot_name" />
+  <arg name="ee_name" />
+  <arg name="sensor_name" />
 
   <arg name="pipeline" default="ompl" />
 
-  <include file="$(find neo_moveit_config)/launch/$(arg pipeline)_planning_pipeline.launch.xml" />
+  <include file="$(find neo_moveit_config)/launch/$(arg pipeline)_planning_pipeline.launch.xml" >
+  	<arg name="robot_name" value="$(arg robot_name)"/>
+    <arg name="ee_name" value="$(arg ee_name)"/>
+    <arg name="sensor_name" value="$(arg sensor_name)"/>
+  </include>
 
 </launch>

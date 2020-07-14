@@ -1,4 +1,4 @@
-gripper_controller:
+ag95:
   type: position_controllers/JointTrajectoryController
   joints:
     - gripper_finger1_joint

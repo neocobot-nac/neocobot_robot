@@ -1,6 +1,11 @@
+<?xml version="1.0"?>
 <launch>
 
-  <!-- This file makes it easy to include the settings for trajectory execution  -->
+  <arg name="robot_name"/>
+  <arg name="ee_name"/>
+  <arg name="sensor_name"/>
+
+  <!-- This file makes it easy to include the settings for trajectory execution  -->  
 
   <!-- Flag indicating whether MoveIt! is allowed to load/unload  or switch controllers -->
   <arg name="moveit_manage_controllers" default="true"/>
@@ -12,18 +17,19 @@
   <param name="trajectory_execution/allowed_goal_duration_margin" value="0.5"/> <!-- default 0.5 -->
   <!-- Allowed joint-value tolerance for validation that trajectory's first point matches current robot state -->
   <param name="trajectory_execution/allowed_start_tolerance" value="0.01"/> <!-- default 0.01 -->
-
-
-  <!-- Load the robot specific controller manager; this sets the moveit_controller_manager ROS parameter -->
-  <arg name="moveit_controller_manager"/>
+  
   <arg name="fake_execution"/>
 
-  <include file="$(find neo_moveit_config)/launch/$(arg moveit_controller_manager)/$(arg moveit_controller_manager)_moveit_controller_manager.launch.xml" unless="$(arg fake_execution)" >
-    <arg name="moveit_controller_manager" value="$(arg moveit_controller_manager)"/>
+  <include file="$(find neo_moveit_config)/launch/moveit_controller_manager.launch.xml" unless="$(arg fake_execution)" >
+    <arg name="robot_name" value="$(arg robot_name)"/>
+    <arg name="ee_name" value="$(arg ee_name)"/>
+    <arg name="sensor_name" value="$(arg sensor_name)"/>
   </include>
 
-  <include file="$(find neo_moveit_config)/launch/$(arg moveit_controller_manager)/fake_moveit_controller_manager.launch.xml" if="$(arg fake_execution)" >
-    <arg name="moveit_controller_manager" value="$(arg moveit_controller_manager)"/>
+  <include file="$(find neo_moveit_config)/launch/fake_moveit_controller_manager.launch.xml" if="$(arg fake_execution)" >
+    <arg name="robot_name" value="$(arg robot_name)"/>
+    <arg name="ee_name" value="$(arg ee_name)"/>
+    <arg name="sensor_name" value="$(arg sensor_name)"/>
   </include>
 
 </launch>

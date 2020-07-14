@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="robot_name"/>
+  <arg name="ee_name"/>
+  <arg name="sensor_name"/>
+
+  <group if="$(eval arg('ee_name')!='')" >
+    <arg if="$(eval arg('sensor_name')!='')" name="name" value="$(arg robot_name)_with_$(arg ee_name)_$(arg sensor_name)" />
+    <arg if="$(eval arg('sensor_name')=='')" name="name" value="$(arg robot_name)_with_$(arg ee_name)" />
+
+		  <!-- The rest of the params are specific to this plugin -->
+		  <rosparam file="$(find neo_moveit_config)/config/$(arg robot_name)/$(arg name)_controllers.yaml"/>
+		  <param name="use_controller_manager" value="false"/>
+		  <param name="trajectory_execution/execution_duration_monitoring" value="false"/>
+		  <param name="moveit_controller_manager" value="moveit_simple_controller_manager/MoveItSimpleControllerManager"/>
+
+  </group>
+
+  <group if="$(eval arg('ee_name')=='')" >
+
+	  <!-- The rest of the params are specific to this plugin -->
+	  <rosparam file="$(find neo_moveit_config)/config/$(arg robot_name)/$(arg robot_name)_controllers.yaml"/>
+	  <param name="use_controller_manager" value="false"/>
+	  <param name="trajectory_execution/execution_duration_monitoring" value="false"/>
+	  <param name="moveit_controller_manager" value="moveit_simple_controller_manager/MoveItSimpleControllerManager"/>
+
+  </group>
+
+</launch>

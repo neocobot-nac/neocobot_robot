@@ -1,7 +1,5 @@
 controller_list:
-  - name: ""
-    action_ns: follow_joint_trajectory
-    type: FollowJointTrajectory
+  - name: fake_NX63A1_controller
     joints:
       - first_joint
       - second_joint
@@ -9,3 +7,7 @@ controller_list:
       - fourth_joint
       - fifth_joint
       - sixth_joint
+  - name: fake_ag95_controller
+    joints:
+      - gripper_finger1_joint
+

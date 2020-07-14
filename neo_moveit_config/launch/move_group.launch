@@ -1,7 +1,11 @@
+<?xml version="1.0"?>
 <launch>
 
-  <!-- The name of robot -->
-  <arg name="robot_name"/>
+  <arg name="robot_name" />
+  <arg name="ee_name" />
+  <arg name="sensor_name" />
+
+  <arg name="planner" default="ompl" />
 
   <!-- GDB Debug Option -->
   <arg name="debug" default="false" />
@@ -42,23 +46,32 @@
   <!-- Load the SRDF and other .yaml configuration files on the param server -->
   <include file="$(find neo_moveit_config)/launch/planning_context.launch">
     <arg name="robot_name" value="$(arg robot_name)"/>
+    <arg name="ee_name" value="$(arg ee_name)"/>
+    <arg name="sensor_name" value="$(arg sensor_name)"/>
   </include>
 
   <!-- Planning Functionality -->
   <include ns="move_group" file="$(find neo_moveit_config)/launch/planning_pipeline.launch.xml">
-    <arg name="pipeline" value="ompl" />
+    <arg name="robot_name" value="$(arg robot_name)"/>
+    <arg name="ee_name" value="$(arg ee_name)"/>
+    <arg name="sensor_name" value="$(arg sensor_name)"/>
+    <arg name="pipeline" value="$(arg planner)" />
   </include>
 
   <!-- Trajectory Execution Functionality -->
   <include ns="move_group" file="$(find neo_moveit_config)/launch/trajectory_execution.launch.xml" if="$(arg allow_trajectory_execution)">
+    <arg name="robot_name" value="$(arg robot_name)"/>
+    <arg name="ee_name" value="$(arg ee_name)"/>
+    <arg name="sensor_name" value="$(arg sensor_name)"/>
+    <arg name="fake_execution" default="$(arg fake_execution)"/>
     <arg name="moveit_manage_controllers" value="true" />
-    <arg name="moveit_controller_manager" value="$(arg robot_name)" />
-    <arg name="fake_execution" value="$(arg fake_execution)" />
   </include>
 
   <!-- Sensors Functionality -->
   <include ns="move_group" file="$(find neo_moveit_config)/launch/sensor_manager.launch.xml" if="$(arg allow_trajectory_execution)">
-    <arg name="moveit_sensor_manager" value="$(arg robot_name)" />
+    <arg name="robot_name" value="$(arg robot_name)"/>
+    <arg name="ee_name" value="$(arg ee_name)"/>
+    <arg name="sensor_name" value="$(arg sensor_name)"/>
   </include>
 
   <!-- Start the actual move_group node/action server -->

@@ -1,0 +1,10 @@
+controller_list:
+  - name: fake_NX63A1_controller
+    joints:
+      - first_joint
+      - second_joint
+      - third_joint
+      - fourth_joint
+      - fifth_joint
+      - sixth_joint
+

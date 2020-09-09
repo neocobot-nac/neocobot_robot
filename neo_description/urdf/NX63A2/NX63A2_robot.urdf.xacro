@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="NX63A2" >
+
+  <!-- common stuff -->
+  <xacro:include filename="$(find neo_description)/urdf/common.gazebo.xacro" />
+
+  <!-- NX63A2 -->
+  <xacro:include filename="$(find neo_description)/urdf/NX63A2/NX63A2.urdf.xacro" />
+
+  <!-- world link -->
+  <link name="world" />
+
+  <!-- arm -->
+  <xacro:NX63A2_robot connected_to='world' >
+  	<origin xyz="0 0 0" rpy="0 0 0"/>
+  </xacro:NX63A2_robot>
+
+</robot>

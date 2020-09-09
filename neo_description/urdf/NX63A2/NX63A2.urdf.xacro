@@ -1,0 +1,204 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+<!-- /////////////////////////////////// gazebo and transmission include //////////////////////////////////////// -->
+  <xacro:include filename="$(find neo_description)/urdf/NX63A2/NX63A2.transmission.xacro" />
+  <xacro:include filename="$(find neo_description)/urdf/NX63A2/NX63A2.gazebo.xacro" />
+
+<!-- /////////////////////////////////////////////// param ////////////////////////////////////////////////////// -->
+  <xacro:macro name="NX63A2_robot" params="connected_to *origin 
+    first_lower_limit:=${-pi}     first_upper_limit:=${pi}
+    second_lower_limit:=${-pi}        second_upper_limit:=${pi}
+    third_lower_limit:=${-8.0*pi/9.0}     third_upper_limit:=${8.0*pi/9.0}
+    fourth_lower_limit:=${-pi}    fourth_upper_limit:=${pi}
+    fifth_lower_limit:=${-pi}     fifth_upper_limit:=${pi}
+    sixth_lower_limit:=${-pi}     sixth_upper_limit:=${pi}">
+    
+<!-- /////////////////////////////////////////////// block ////////////////////////////////////////////////////// -->
+  <xacro:macro name="link_material" params="name">
+    <material name="${name}">
+      <color rgba="0.75294 0.75294 0.75294 1" />
+    </material>
+  </xacro:macro>
+
+  <xacro:macro name="link_geometry" params="name">
+    <geometry>
+      <mesh filename="package://neo_description/meshes/NX63A2/${name}.STL" />
+    </geometry>
+  </xacro:macro>
+
+  <xacro:macro name="cylinder_inertial" params="radius length mass">
+    <inertial>
+      <mass value="${mass}" />
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+      <inertia  ixx="${1.0 / 12 * mass * (3 * radius * radius + length * length)}" ixy="0.0" ixz="0.0"
+                iyy="${1.0 / 12 * mass * (3 * radius * radius + length * length)}" iyz="0.0"
+                izz="${0.5 * mass * radius * radius}" />
+    </inertial>
+  </xacro:macro>
+
+<!-- ///////////////////////////////////////////// base link //////////////////////////////////////////////////// -->
+    <link name="base_link" >
+      <visual>
+        <xacro:link_geometry name="base_link" />
+        <xacro:link_material name="LightGrey" />
+      </visual>
+      <collision>
+        <xacro:link_geometry name="base_link" />
+      </collision>
+      <xacro:cylinder_inertial radius="0.06" length="0.05" mass="0.37168" />
+    </link>
+    
+<!-- //////////////////////////////////////////// first joint /////////////////////////////////////////////////// -->
+    <joint name="first_joint" type="revolute">
+      <parent link="base_link" />
+      <child link="first_link" />
+      <origin xyz="0 0 0.0335" rpy="0 0 0" />
+      <axis xyz="0 0 1" />
+      <limit lower="${first_lower_limit}" upper="${first_upper_limit}" effort="100.0" velocity="3.14"/>
+      <dynamics damping="0.0" friction="0.0" />
+    </joint>
+
+<!-- //////////////////////////////////////////// first link //////////////////////////////////////////////////// -->
+    <link name="first_link">
+      <visual>
+        <xacro:link_geometry name="first_link" />
+        <xacro:link_material name="LightGrey" />
+      </visual>
+      <collision>
+        <xacro:link_geometry name="first_link" />
+      </collision>
+      <xacro:cylinder_inertial radius="0.06" length="0.15" mass="0.82773" />
+    </link>
+
+<!-- /////////////////////////////////////////// second joint /////////////////////////////////////////////////// -->
+    <joint name="second_joint" type="revolute">
+      <parent link="first_link" />
+      <child link="second_link" />
+      <origin xyz="0 -0.068 0.056" rpy="-1.5708 1.4137 -3.1416" />
+      <axis xyz="0 0 1" />
+      <limit lower="${second_lower_limit}" upper="${second_upper_limit}" effort="100.0" velocity="3.14"/>
+      <dynamics damping="0.0" friction="0.0" />
+    </joint>
+
+<!-- /////////////////////////////////////////// second link //////////////////////////////////////////////////// -->
+    <link name="second_link">
+      <visual>
+        <xacro:link_geometry name="second_link" />
+        <xacro:link_material name="LightGrey" />
+      </visual>
+      <collision>
+        <xacro:link_geometry name="second_link" />
+      </collision>
+      <xacro:cylinder_inertial radius="0.06" length="0.30" mass="1.9714" />
+    </link>
+
+<!-- //////////////////////////////////////////// third joint /////////////////////////////////////////////////// -->
+    <joint name="third_joint" type="revolute">
+      <parent link="second_link" />
+      <child link="third_link" />
+      <origin xyz="-0.24593 -0.038952 0.009" rpy="0 0 0.15708" />
+      <axis xyz="0 0 1" />
+      <limit lower="${third_lower_limit}" upper="${third_upper_limit}" effort="100.0" velocity="3.14"/>
+      <dynamics damping="0.0" friction="0.0" />
+    </joint>
+
+<!-- //////////////////////////////////////////// third link //////////////////////////////////////////////////// -->
+    <link name="third_link">
+      <visual>
+        <xacro:link_geometry name="third_link" />
+        <xacro:link_material name="LightGrey" />
+      </visual>
+      <collision>
+        <xacro:link_geometry name="third_link" />
+      </collision>
+      <xacro:cylinder_inertial radius="0.06" length="0.30" mass="1.1196" />
+    </link>
+
+<!-- /////////////////////////////////////////// fourth joint /////////////////////////////////////////////////// -->
+    <joint name="fourth_joint" type="revolute">
+      <parent link="third_link" />
+      <child link="fourth_link" />
+      <origin xyz="-0.249 0 0.003" rpy="0 0 0" />
+      <axis xyz="0 0 1" />
+      <limit lower="${fourth_lower_limit}" upper="${fourth_upper_limit}" effort="100.0" velocity="3.14"/>
+      <dynamics damping="0.0" friction="0.0" />
+    </joint>
+
+<!-- /////////////////////////////////////////// fourth link //////////////////////////////////////////////////// -->
+    <link name="fourth_link">
+      <visual>
+        <xacro:link_geometry name="fourth_link" />
+        <xacro:link_material name="LightGrey" />
+      </visual>
+      <collision>
+        <xacro:link_geometry name="fourth_link" />
+      </collision>
+      <xacro:cylinder_inertial radius="0.06" length="0.12" mass="0.41853" />
+    </link>
+
+<!-- //////////////////////////////////////////// fifth joint /////////////////////////////////////////////////// -->
+    <joint name="fifth_joint" type="revolute">
+      <parent link="fourth_link" />
+      <child link="fifth_link" />
+      <origin xyz="-0.038 0 0.064" rpy="-1.5708 0 1.5708" />
+      <axis xyz="0 0 1" />
+      <limit lower="${fifth_lower_limit}" upper="${fifth_upper_limit}" effort="100.0" velocity="3.14"/>
+      <dynamics damping="0.0" friction="0.0" />
+    </joint>
+
+<!-- //////////////////////////////////////////// fifth link //////////////////////////////////////////////////// -->
+    <link name="fifth_link">
+      <visual>
+        <xacro:link_geometry name="fifth_link" />
+        <xacro:link_material name="LightGrey" />
+      </visual>
+      <collision>
+        <xacro:link_geometry name="fifth_link" />
+      </collision>
+      <xacro:cylinder_inertial radius="0.06" length="0.12" mass="0.34045" />
+    </link>
+
+<!-- //////////////////////////////////////////// sixth joint /////////////////////////////////////////////////// -->
+    <joint name="sixth_joint" type="revolute">
+      <parent link="fifth_link" />
+      <child link="sixth_link" />
+      <origin xyz="0 -0.043 0.064" rpy="1.5708 3.1416 0" />
+      <axis xyz="0 0 1" />
+      <limit lower="${sixth_lower_limit}" upper="${sixth_upper_limit}" effort="100.0" velocity="3.14"/>
+      <dynamics damping="0.0" friction="0.0" />
+    </joint>
+
+<!-- //////////////////////////////////////////// sixth link //////////////////////////////////////////////////// -->
+    <link name="sixth_link">
+      <visual>
+        <xacro:link_geometry name="sixth_link" />
+        <xacro:link_material name="LightGrey" />
+      </visual>
+      <collision>
+        <xacro:link_geometry name="sixth_link" />
+      </collision>
+      <xacro:cylinder_inertial radius="0.03" length="0.0605" mass="0.050517" />
+    </link>
+
+<!-- ////////////////////////////////////////////    base    //////////////////////////////////////////////////// -->
+    <joint name="${connected_to}_to_base_link" type="fixed">
+      <xacro:insert_block name="origin" />
+      <parent link="${connected_to}" />
+      <child link="base_link" />
+    </joint>
+
+<!-- /////////////////////////////////////////// end effector /////////////////////////////////////////////////// -->
+    <link name="ee_link" />
+    <joint name="ee_fixed_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <parent link="sixth_link" />
+      <child link="ee_link" />
+    </joint>
+
+<!-- /////////////////////////////////// gazebo and transmission load /////////////////////////////////////////// -->
+    <xacro:NX63A2_transmission />
+    <xacro:NX63A2_gazebo />
+
+  </xacro:macro>
+</robot>

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:macro name="transmission_block" params="joint_name">
+    <transmission name="${joint_name}_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${joint_name}">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${joint_name}_motor">
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission> 
+  </xacro:macro>
+
+  <xacro:macro name="NX63A2_transmission">
+    <xacro:transmission_block joint_name="first_joint" />
+    <xacro:transmission_block joint_name="second_joint" />
+    <xacro:transmission_block joint_name="third_joint" />
+    <xacro:transmission_block joint_name="fourth_joint" />
+    <xacro:transmission_block joint_name="fifth_joint" />
+    <xacro:transmission_block joint_name="sixth_joint" />
+  </xacro:macro>
+</robot>

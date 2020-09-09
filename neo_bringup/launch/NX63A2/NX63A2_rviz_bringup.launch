@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="robot_ip" doc="IP of robot controller" />
+  <arg name="robot_port" default="8301" doc="Port of robot controller" />
+  <arg name="robot_serial" default="000027104E20" doc="Serial of robot" />
+  <arg name="robot_timeout" default="3" doc="Connection timeout" />
+  <arg name="robot_transport" default="1" doc="Connection transport type" />
+  <arg name="robot_name" default="NX63A2" doc="name of robot" />
+  <arg name="robot_mode" default="1" doc="simulator mode"/>
+
+  <!-- driver -->
+  <include file="$(find neo_bringup)/launch/$(arg robot_name)/$(arg robot_name)_bringup.launch">
+    <arg name="robot_ip" value="$(arg robot_ip)"/>
+    <arg name="robot_port" value="$(arg robot_port)"/>
+    <arg name="robot_serial" value="$(arg robot_serial)"/>
+    <arg name="robot_timeout" value="$(arg robot_timeout)"/>
+    <arg name="robot_transport" value="$(arg robot_transport)"/>
+    <arg name="robot_name" value="$(arg robot_name)"/>
+    <arg name="robot_mode" value="$(arg robot_mode)"/>
+  </include>
+
+  <!-- rviz -->
+  <node name="$(arg robot_name)_rviz" pkg="rviz" type="rviz" args="-d $(find neo_description)/rviz/$(arg robot_name).rviz" />
+  
+</launch>

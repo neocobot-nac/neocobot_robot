@@ -1,0 +1,13 @@
+controller_list:
+  - name: fake_NX63A2_controller
+    joints:
+      - first_joint
+      - second_joint
+      - third_joint
+      - fourth_joint
+      - fifth_joint
+      - sixth_joint
+  - name: fake_ag95_controller
+    joints:
+      - gripper_finger1_joint
+

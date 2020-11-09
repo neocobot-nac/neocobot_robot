@@ -100,6 +100,22 @@ NEOStatus Interfaces::Calibrate()
 }
 
 
+int Interfaces::IsCalibrating()
+{
+    if(NeoSI == NULL)
+    {
+        return 0;
+    }
+
+    IsCalibratingType IsCalibratingFunc = (IsCalibratingType)dlsym(NeoSI, "IsCalibrating");
+    if(IsCalibratingFunc == NULL)
+    {
+        return 0;
+    }
+    return IsCalibratingFunc();
+}
+
+
 NEOStatus Interfaces::Release(size_t size, const int* joint_ids)
 {
     if(NeoSI == NULL)
@@ -209,6 +225,101 @@ NEOStatus Interfaces::Recover()
         return NEOCOBOT_ERROR_ILLFUNC;
     }
     return RecoverFunc();
+}
+
+NEOStatus Interfaces::MoveJoints(size_t size, const int* joint_ids, const double* joints, const double velocity, const double acceleration, unsigned int mode)
+{
+    if(NeoSI == NULL)
+    {
+        return NEOCOBOT_ERROR_INIT;
+    }
+
+    MoveJointsType MoveJointsFunc = (MoveJointsType)dlsym(NeoSI, "MoveJoints");
+    if(MoveJointsFunc == NULL)
+    {
+        return NEOCOBOT_ERROR_ILLFUNC;
+    }
+    return MoveJointsFunc(size, joint_ids, joints, velocity, acceleration, mode);
+}
+
+
+NEOStatus Interfaces::MoveEndpos(Pose pose, const double velocity, const double acceleration, unsigned int mode)
+{
+    if(NeoSI == NULL)
+    {
+        return NEOCOBOT_ERROR_INIT;
+    }
+
+    MoveEndposType MoveEndposFunc = (MoveEndposType)dlsym(NeoSI, "MoveEndpos");
+    if(MoveEndposFunc == NULL)
+    {
+        return NEOCOBOT_ERROR_ILLFUNC;
+    }
+    return MoveEndposFunc(pose, velocity, acceleration, mode);
+}
+
+
+NEOStatus Interfaces::WaitForJoints(size_t size, const int* joint_ids)
+{
+    if(NeoSI == NULL)
+    {
+        return NEOCOBOT_ERROR_INIT;
+    }
+
+    WaitForJointsType WaitForJointsFunc = (WaitForJointsType)dlsym(NeoSI, "WaitForJoints");
+    if(WaitForJointsFunc == NULL)
+    {
+        return NEOCOBOT_ERROR_ILLFUNC;
+    }
+    return WaitForJointsFunc(size, joint_ids);
+}
+
+
+NEOStatus Interfaces::MoveJ(size_t size, DoubleArray* points, const double velocity, const double acceleration, const double interval, unsigned int mode, int loop)
+{
+    if(NeoSI == NULL)
+    {
+        return NEOCOBOT_ERROR_INIT;
+    }
+
+    MoveJType MoveJFunc = (MoveJType)dlsym(NeoSI, "MoveJ");
+    if(MoveJFunc == NULL)
+    {
+        return NEOCOBOT_ERROR_ILLFUNC;
+    }
+    return MoveJFunc(size, points, velocity, acceleration, interval, mode, loop);
+}
+
+
+NEOStatus Interfaces::MoveL(size_t size, Pose* points, const double velocity, const double acceleration, const double interval, unsigned int mode, int loop)
+{
+    if(NeoSI == NULL)
+    {
+        return NEOCOBOT_ERROR_INIT;
+    }
+
+    MoveLType MoveLFunc = (MoveLType)dlsym(NeoSI, "MoveL");
+    if(MoveLFunc == NULL)
+    {
+        return NEOCOBOT_ERROR_ILLFUNC;
+    }
+    return MoveLFunc(size, points, velocity, acceleration, interval, mode, loop);
+}
+
+
+NEOStatus Interfaces::MoveP(size_t size, Pose* points, const double velocity, const double acceleration, const double interval, unsigned int mode, int loop)
+{
+    if(NeoSI == NULL)
+    {
+        return NEOCOBOT_ERROR_INIT;
+    }
+
+    MovePType MovePFunc = (MovePType)dlsym(NeoSI, "MoveP");
+    if(MovePFunc == NULL)
+    {
+        return NEOCOBOT_ERROR_ILLFUNC;
+    }
+    return MovePFunc(size, points, velocity, acceleration, interval, mode, loop);
 }
 
 
@@ -404,102 +515,6 @@ NEOStatus Interfaces::RemoveMonitorParam(int status)
 }
 
 
-NEOStatus Interfaces::MoveJoints(size_t size, const int* joint_ids, const double* joints, const double velocity, const double acceleration, unsigned int mode)
-{
-    if(NeoSI == NULL)
-    {
-        return NEOCOBOT_ERROR_INIT;
-    }
-
-    MoveJointsType MoveJointsFunc = (MoveJointsType)dlsym(NeoSI, "MoveJoints");
-    if(MoveJointsFunc == NULL)
-    {
-        return NEOCOBOT_ERROR_ILLFUNC;
-    }
-    return MoveJointsFunc(size, joint_ids, joints, velocity, acceleration, mode);
-}
-
-
-NEOStatus Interfaces::MoveEndpos(Pose pose, const double velocity, const double acceleration, unsigned int mode)
-{
-    if(NeoSI == NULL)
-    {
-        return NEOCOBOT_ERROR_INIT;
-    }
-
-    MoveEndposType MoveEndposFunc = (MoveEndposType)dlsym(NeoSI, "MoveEndpos");
-    if(MoveEndposFunc == NULL)
-    {
-        return NEOCOBOT_ERROR_ILLFUNC;
-    }
-    return MoveEndposFunc(pose, velocity, acceleration, mode);
-}
-
-
-NEOStatus Interfaces::WaitForJoints(size_t size, const int* joint_ids)
-{
-    if(NeoSI == NULL)
-    {
-        return NEOCOBOT_ERROR_INIT;
-    }
-
-    WaitForJointsType WaitForJointsFunc = (WaitForJointsType)dlsym(NeoSI, "WaitForJoints");
-    if(WaitForJointsFunc == NULL)
-    {
-        return NEOCOBOT_ERROR_ILLFUNC;
-    }
-    return WaitForJointsFunc(size, joint_ids);
-}
-
-
-NEOStatus Interfaces::MoveJ(size_t size, DoubleArray* points, const double velocity, const double acceleration, const double interval, unsigned int mode, int loop)
-{
-    if(NeoSI == NULL)
-    {
-        return NEOCOBOT_ERROR_INIT;
-    }
-
-    MoveJType MoveJFunc = (MoveJType)dlsym(NeoSI, "MoveJ");
-    if(MoveJFunc == NULL)
-    {
-        return NEOCOBOT_ERROR_ILLFUNC;
-    }
-    return MoveJFunc(size, points, velocity, acceleration, interval, mode, loop);
-}
-
-
-NEOStatus Interfaces::MoveL(size_t size, Pose* points, const double velocity, const double acceleration, const double interval, unsigned int mode, int loop)
-{
-    if(NeoSI == NULL)
-    {
-        return NEOCOBOT_ERROR_INIT;
-    }
-
-    MoveLType MoveLFunc = (MoveLType)dlsym(NeoSI, "MoveL");
-    if(MoveLFunc == NULL)
-    {
-        return NEOCOBOT_ERROR_ILLFUNC;
-    }
-    return MoveLFunc(size, points, velocity, acceleration, interval, mode, loop);
-}
-
-
-NEOStatus Interfaces::MoveP(size_t size, Pose* points, const double velocity, const double acceleration, const double interval, unsigned int mode, int loop)
-{
-    if(NeoSI == NULL)
-    {
-        return NEOCOBOT_ERROR_INIT;
-    }
-
-    MovePType MovePFunc = (MovePType)dlsym(NeoSI, "MoveP");
-    if(MovePFunc == NULL)
-    {
-        return NEOCOBOT_ERROR_ILLFUNC;
-    }
-    return MovePFunc(size, points, velocity, acceleration, interval, mode, loop);
-}
-
-
 NEOStatus Interfaces::Forward(const double* joints, Pose* pose)
 {
     if(NeoSI == NULL)
@@ -529,6 +544,38 @@ NEOStatus Interfaces::Inverse(Pose pose, const double* previews, DoubleArray* jo
         return NEOCOBOT_ERROR_ILLFUNC;
     }
     return InverseFunc(pose, previews, joints);
+}
+
+
+NEOStatus Interfaces::AddEndEffector(const char* name, Pose pose, const double mass, const double* CoM)
+{
+    if(NeoSI == NULL)
+    {
+        return NEOCOBOT_ERROR_INIT;
+    }
+
+    AddEndEffectorType AddEndEffectorFunc = (AddEndEffectorType)dlsym(NeoSI, "AddEndEffector");
+    if(AddEndEffectorFunc == NULL)
+    {
+        return NEOCOBOT_ERROR_ILLFUNC;
+    }
+    return AddEndEffectorFunc(name, pose, mass, CoM);
+}
+
+
+NEOStatus Interfaces::DeleteEndEffector(const char* name)
+{
+    if(NeoSI == NULL)
+    {
+        return NEOCOBOT_ERROR_INIT;
+    }
+
+    DeleteEndEffectorType DeleteEndEffectorFunc = (DeleteEndEffectorType)dlsym(NeoSI, "DeleteEndEffector");
+    if(DeleteEndEffectorFunc == NULL)
+    {
+        return NEOCOBOT_ERROR_ILLFUNC;
+    }
+    return DeleteEndEffectorFunc(name);
 }
 
 
@@ -580,6 +627,38 @@ NEOStatus Interfaces::UnloadEndEffector()
 }
 
 
+NEOStatus Interfaces::SaveEEParameters(const char* name, Pose pose, const double mass, const double* CoM)
+{
+    if(NeoSI == NULL)
+    {
+        return NEOCOBOT_ERROR_INIT;
+    }
+
+    SaveEEParametersType SaveEEParametersFunc = (SaveEEParametersType)dlsym(NeoSI, "SaveEEParameters");
+    if(SaveEEParametersFunc == NULL)
+    {
+        return NEOCOBOT_ERROR_ILLFUNC;
+    }
+    return SaveEEParametersFunc(name, pose, mass, CoM);
+}
+
+
+NEOStatus Interfaces::GetEEParameters(const char* name, Pose* pose, double* mass, double* CoM)
+{
+    if(NeoSI == NULL)
+    {
+        return NEOCOBOT_ERROR_INIT;
+    }
+
+    GetEEParametersType GetEEParametersFunc = (GetEEParametersType)dlsym(NeoSI, "GetEEParameters");
+    if(GetEEParametersFunc == NULL)
+    {
+        return NEOCOBOT_ERROR_ILLFUNC;
+    }
+    return GetEEParametersFunc(name, pose, mass, CoM);
+}
+
+
 // NEOStatus Interfaces::GetProjectList(size_t* size, string* list)
 // {
 //     if(NeoSI == NULL)
@@ -587,7 +666,6 @@ NEOStatus Interfaces::UnloadEndEffector()
 //         return NEOCOBOT_ERROR_INIT;
 //     }
 // }
-
 
 
 NEOStatus Interfaces::LoadProject(const char* name)
@@ -702,7 +780,6 @@ NEOStatus Interfaces::GetPose(const char* name, DoubleArray* pose)
 }
 
 
-
 // NEOStatus Interfaces::GetPoseList(size_t* size, string* list)
 // {
 //     if(NeoSI == NULL)
@@ -710,7 +787,6 @@ NEOStatus Interfaces::GetPose(const char* name, DoubleArray* pose)
 //         return NEOCOBOT_ERROR_INIT;
 //     }
 // }
-
 
 
 NEOStatus Interfaces::EnableCollisionProtection(int level)
@@ -919,60 +995,5 @@ NEOStatus Interfaces::GetRotationMatrix(RotationMatrix* rotation_matrix)
     }
     return GetRotationMatrixFunc(rotation_matrix);
 }
-
-
-NEOStatus Interfaces::SaveEEKinematics(Pose pose)
-{
-    if(NeoSI == NULL)
-    {
-        return NEOCOBOT_ERROR_INIT;
-    }
-
-    SaveEEKinematicsType SaveEEKinematicsFunc = (SaveEEKinematicsType)dlsym(NeoSI, "SaveEEKinematics");
-    if(SaveEEKinematicsFunc == NULL)
-    {
-        return NEOCOBOT_ERROR_ILLFUNC;
-    }
-    return SaveEEKinematicsFunc(pose);
-}
-
-
-NEOStatus Interfaces::GetEEKinematics(Pose* pose)
-{
-    if(NeoSI == NULL)
-    {
-        return NEOCOBOT_ERROR_INIT;
-    }
-
-    GetEEKinematicsType GetEEKinematicsFunc = (GetEEKinematicsType)dlsym(NeoSI, "GetEEKinematics");
-    if(GetEEKinematicsFunc == NULL)
-    {
-        return NEOCOBOT_ERROR_ILLFUNC;
-    }
-    return GetEEKinematicsFunc(pose);
-}
-
-
-NEOStatus Interfaces::SetEndposOffset(Pose pose)
-{
-    if(NeoSI == NULL)
-    {
-        return NEOCOBOT_ERROR_INIT;
-    }
-
-    SetEndposOffsetType SetEndposOffsetFunc = (SetEndposOffsetType)dlsym(NeoSI, "SetEndposOffset");
-    if(SetEndposOffsetFunc == NULL)
-    {
-        return NEOCOBOT_ERROR_ILLFUNC;
-    }
-    return SetEndposOffsetFunc(pose);
-}
-
-
-
-
-
-
-
 
 
